@@ -37,7 +37,8 @@ LLM
 
 Frontend: - Next.js - Tailwind CSS
 
-Backend: - FastAPI - PostgreSQL
+Backend: - FastAPI - SQLAlchemy - SQLite for local development - PostgreSQL
+for deployment
 
 AI: - Gemini API - SentenceTransformers - FAISS - FinBERT
 
@@ -55,3 +56,9 @@ Deployment: - Docker
 -   Information Extraction
 -   Recommendation Engine
 -   Full-stack AI Application Development
+
+## Current Status
+
+Modules 1 and 2 are complete: PDFs can be uploaded, validated, listed,
+processed, persisted, and deleted through the API. The next milestone is
+page-aware RAG indexing (Module 3).

@@ -31,10 +31,15 @@ Implemented in Modules 1 and 2. The development default is SQLite at
 
 ### document_chunks
 
+Planned for Module 3. Chunk metadata must retain the source location required
+for citations.
+
 -   id
 -   document_id
+-   page_number
+-   chunk_index
 -   chunk_text
--   embedding
+-   embedding reference or vector-store key
 -   created_at
 
 ### chat_sessions

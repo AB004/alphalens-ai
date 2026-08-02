@@ -20,24 +20,34 @@ Deliverables - Parsed text - Clean document - Processing status
 
 ## Module 3 - RAG Indexing
 
-Submodules - Chunking - Embeddings - FAISS - Database persistence Deliverables - Searchable
-vector index with document/chunk storage
+Status: Planned
+
+Dependencies: processed documents from Modules 1 and 2
+
+Submodules - Page-aware chunking - Embeddings - FAISS - Database persistence
+Deliverables - Searchable vector index with document/chunk/page storage
 
 ## Module 4 - Document Intelligence
 
-Submodules - Executive summary - SWOT - Financial metric extraction -
-Risks - Opportunities Deliverables - AI report
+Status: Planned
+
+Submodules - Executive summary - SWOT - Financial metric extraction with
+citations - Risks - Opportunities Deliverables - Stored AI report
 
 ## Module 5 - Recommendation Engine
 
-Submodules - Financial feature extraction - Rule-based scoring -
-Confidence Deliverables - Buy/Hold/Sell - Reasons
+Status: Planned
+
+Submodules - Financial feature extraction - Rule-based scoring - Confidence
+Deliverables - Buy/Hold/Sell - Reasons - Evidence citations - Disclaimer
 
 ## Module 6 - Multi Document Chat
 
-Submodules - Retriever - Prompt builder - Citation support -
-Multi-document comparison Deliverables - Chat with one PDF - Chat with
-multiple PDFs - Compare companies
+Status: Planned
+
+Submodules - Retriever - Prompt builder - Citation support - Multi-document
+comparison Deliverables - Chat with one PDF - Chat with multiple PDFs -
+Compare companies
 
 ==============================
 
@@ -45,25 +55,35 @@ multiple PDFs - Compare companies
 
 ## Module 7 - Company Data
 
+Status: Planned
+
 Submodules - Company search - Financial statements - Ratios
 Deliverables - Company dashboard
 
 ## Module 8 - News Engine
+
+Status: Planned
 
 Submodules - Google News RSS - Finnhub - Deduplication Deliverables -
 Latest company news
 
 ## Module 9 - Sentiment Analysis
 
+Status: Planned
+
 Submodules - FinBERT - Aggregation Deliverables -
 Positive/Negative/Neutral - Overall sentiment
 
 ## Module 10 - Recommendation
 
+Status: Planned
+
 Submodules - Financial score - Sentiment score - Final weighted score
 Deliverables - Buy/Hold/Sell - Confidence - Explanation
 
 ## Module 11 - Company Chat
+
+Status: Planned
 
 Submodules - Context builder - Prompt templates - LLM Deliverables -
 Chat using financial data + news
@@ -74,13 +94,19 @@ Chat using financial data + news
 
 ## Module 12 - Frontend
 
+Status: Planned
+
 Deliverables - Dashboard - Upload page - Company page - Chat UI
 
 ## Module 13 - Testing
 
+Status: Planned
+
 Deliverables - API tests - RAG evaluation - Sentiment validation
 
 ## Module 14 - Deployment
+
+Status: Planned
 
 Deliverables - Docker - Production deployment
 

@@ -1,49 +1,67 @@
-# ROADMAP
+# AlphaLens Roadmap
 
-## Week 1
+## Current foundation — complete
 
--   Project setup
--   Backend
--   Database
--   PDF upload
--   PDF parsing
--   Chunking
--   Embeddings
--   FAISS
+- Module 1: PDF upload, validation, file management, and persistent metadata
+- Module 2: PDF text extraction, cleaning, table-layout detection, and
+  persistent processing results
 
-Milestone: Upload, persist, process, and index multiple PDFs. Modules 1 and 2
-provide persistent document storage; Module 3 will add chunk storage and RAG
-indexing.
+The foundation is verified against the 383-page Infosys annual report using
+the complete upload → process → list → delete API lifecycle.
 
-## Week 2
+## Sprint 1 — Financial Document Intelligence
 
--   RAG retrieval
--   AI summaries
--   Financial extraction
--   Recommendation engine
--   Multi-PDF comparison
--   Chat with PDFs
+### Module 3 — RAG Indexing
 
-Milestone: Complete Financial Document Intelligence.
+- Page-aware chunking with document ID, page number, and chunk index metadata
+- SentenceTransformer embeddings
+- Per-document FAISS index persistence
+- `document_chunks` database records and retrieval endpoint
 
-## Week 3
+Milestone: Searchable, cited context from one or more uploaded reports.
 
--   Stock search
--   yfinance integration
--   News collection
--   Sentiment analysis
--   Financial scoring
--   Recommendation engine
+### Module 4 — Document Intelligence
 
-Milestone: Complete Market Intelligence.
+- Structured financial metric extraction with source citations
+- Executive summary, risks, opportunities, and SWOT generation
+- Stored report result for repeatable viewing
 
-## Week 4
+Milestone: Explainable AI research report for an uploaded company document.
 
--   Company chat
--   Frontend polishing
--   Testing
--   Docker
--   Deployment
--   README improvements
+### Module 5 — Financial Recommendation
 
-Milestone: Production-ready AlphaLens v1.
+- Transparent rules over extracted financial features
+- Buy / Hold / Sell score, confidence, reasons, and cited evidence
+- Explicit disclaimer that output is educational, not investment advice
+
+### Module 6 — Multi-document Chat
+
+- Retrieval, prompt building, and answer citations
+- Single-document and multi-document chat
+- Cross-company comparison with source/page references
+
+Milestone: Complete Financial Document Intelligence workflow.
+
+## Sprint 2 — Market Intelligence
+
+### Modules 7–11
+
+- Company search, statements, and ratios
+- News collection, deduplication, and caching
+- FinBERT sentiment aggregation
+- Explainable market recommendation
+- Company chat grounded in financial data and news
+
+Milestone: Complete Market Intelligence workflow.
+
+## Sprint 3 — Resume-ready production release
+
+### Modules 12–14
+
+- Next.js dashboard, upload, report, comparison, and chat interfaces
+- API, integration, retrieval-quality, and sentiment-validation tests
+- Docker, environment configuration, deployment, and observability
+- README with architecture diagram, demo screenshots, API examples, and
+  measurable evaluation results
+
+Milestone: AlphaLens v1 — a deployed, demonstrable end-to-end portfolio project.
