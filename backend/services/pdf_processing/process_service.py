@@ -1,30 +1,35 @@
 import os
 import re
-from typing import List, Dict, Any
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List
+
 from fastapi import HTTPException, status
 from pypdf import PdfReader
+from sqlalchemy.exc import SQLAlchemyError
 
-UPLOAD_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "uploads")
+from database.crud import get_document, get_document_by_stored_filename
+from database.session import SessionLocal
 
 
-def get_upload_path(filename: str) -> str:
-    safe_name = os.path.basename(filename)
-    path = os.path.join(UPLOAD_DIR, safe_name)
-    if not os.path.isfile(path):
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Uploaded file not found: {safe_name}")
+UPLOAD_DIR = Path(__file__).resolve().parents[2] / "uploads"
+
+
+def get_upload_path(filename: str) -> Path:
+    safe_name = Path(filename).name
+    path = UPLOAD_DIR / safe_name
+    if not path.is_file():
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Uploaded file not found: {safe_name}")
     return path
 
 
-def extract_text_from_pdf(path: str) -> str:
+def extract_text_from_pdf(path: Path) -> str:
     try:
-        reader = PdfReader(path)
-        pages = []
-        for page in reader.pages:
-            text = page.extract_text() or ""
-            pages.append(text)
+        reader = PdfReader(str(path))
+        pages = [(page.extract_text() or "") for page in reader.pages]
         return "\n\f\n".join(pages)
     except Exception as exc:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Unable to extract text from PDF: {exc}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Unable to extract text from PDF: {exc}") from exc
 
 
 def clean_extracted_text(text: str) -> str:
@@ -44,6 +49,7 @@ def clean_extracted_text(text: str) -> str:
 
 
 def extract_tables_from_text(text: str) -> List[Dict[str, Any]]:
+    """Identify text-layout tables. Structured table extraction is a later enhancement."""
     tables = []
     lines = [line for line in text.splitlines() if line.strip()]
     candidate = []
@@ -69,26 +75,72 @@ def extract_tables_from_text(text: str) -> List[Dict[str, Any]]:
     return tables
 
 
-def process_pdf_file(path: str) -> Dict[str, Any]:
+def process_pdf_file(path: Path) -> Dict[str, Any]:
     parsed_text = extract_text_from_pdf(path)
-    clean_text = clean_extracted_text(parsed_text)
-    tables = extract_tables_from_text(parsed_text)
     return {
         "parsed_text": parsed_text,
-        "clean_text": clean_text,
-        "tables": tables,
-        "page_count": len(PdfReader(path).pages),
+        "clean_text": clean_extracted_text(parsed_text),
+        "tables": extract_tables_from_text(parsed_text),
+        "page_count": len(PdfReader(str(path)).pages),
         "size_bytes": os.path.getsize(path),
-        "storage_path": path,
-        "stored_filename": os.path.basename(path),
     }
 
 
-def process_pdf_files(filenames: List[str]) -> Dict[str, Any]:
+def _serialize_processed_document(document) -> Dict[str, Any]:
+    return {
+        "id": document.id,
+        "original_filename": document.original_filename,
+        "stored_filename": document.stored_filename,
+        "storage_path": document.storage_path,
+        "size_bytes": document.size_bytes,
+        "page_count": document.page_count,
+        "parsed_text": document.parsed_text,
+        "clean_text": document.clean_text,
+        "tables": document.tables or [],
+    }
+
+
+def process_pdf_files(document_ids: List[int] | None = None, filenames: List[str] | None = None) -> Dict[str, Any]:
+    document_ids = document_ids or []
+    filenames = filenames or []
     results = []
-    for filename in filenames:
-        path = get_upload_path(filename)
-        result = process_pdf_file(path)
-        result["original_filename"] = filename
-        results.append(result)
-    return {"processed": results}
+    db = SessionLocal()
+
+    try:
+        documents = []
+        seen_ids = set()
+        for document_id in document_ids:
+            document = get_document(db, document_id)
+            if not document:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Document not found: {document_id}")
+            if document.id not in seen_ids:
+                documents.append(document)
+                seen_ids.add(document.id)
+        for filename in filenames:
+            document = get_document_by_stored_filename(db, Path(filename).name)
+            if not document:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Uploaded document not found: {Path(filename).name}")
+            if document.id not in seen_ids:
+                documents.append(document)
+                seen_ids.add(document.id)
+
+        for document in documents:
+            path = get_upload_path(document.stored_filename)
+            processed = process_pdf_file(path)
+            document.parsed_text = processed["parsed_text"]
+            document.clean_text = processed["clean_text"]
+            document.tables = processed["tables"]
+            document.page_count = processed["page_count"]
+            document.size_bytes = processed["size_bytes"]
+            document.status = "processed"
+            document.processed_timestamp = datetime.now(timezone.utc)
+            results.append(document)
+        db.commit()
+        for document in results:
+            db.refresh(document)
+        return {"processed": [_serialize_processed_document(document) for document in results]}
+    except SQLAlchemyError as exc:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Unable to save processed document.") from exc
+    finally:
+        db.close()

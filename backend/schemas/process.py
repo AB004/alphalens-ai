@@ -1,11 +1,13 @@
 from pydantic import BaseModel
 from typing import List, Any
+from pydantic import model_validator
 
 class TableData(BaseModel):
     lines: List[str]
     rows: List[List[str]]
 
 class ProcessResult(BaseModel):
+    id: int
     original_filename: str
     stored_filename: str
     storage_path: str
@@ -19,4 +21,11 @@ class ProcessResponse(BaseModel):
     processed: List[ProcessResult]
 
 class ProcessRequest(BaseModel):
-    filenames: List[str]
+    document_ids: List[int] = []
+    filenames: List[str] = []
+
+    @model_validator(mode="after")
+    def has_document_reference(self):
+        if not self.document_ids and not self.filenames:
+            raise ValueError("At least one document ID or filename is required.")
+        return self

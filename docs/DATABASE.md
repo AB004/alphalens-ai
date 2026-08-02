@@ -12,18 +12,30 @@
 
 ### documents
 
+Implemented in Modules 1 and 2. The development default is SQLite at
+`alphalens.db`; set `DATABASE_URL` for another SQLAlchemy-supported database.
+
 -   id
--   user_id
--   file_name
--   company
--   upload_time
+-   original_filename
+-   stored_filename
+-   storage_path
+-   content_type
+-   size_bytes
+-   page_count
+-   status (`uploaded` or `processed`)
+-   parsed_text
+-   clean_text
+-   tables (JSON)
+-   upload_timestamp
+-   processed_timestamp
 
 ### document_chunks
 
 -   id
 -   document_id
 -   chunk_text
--   embedding_id
+-   embedding
+-   created_at
 
 ### chat_sessions
 

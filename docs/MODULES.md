@@ -2,20 +2,26 @@
 
 # Sprint 1 - Financial Document Intelligence
 
-## Module 1 - PDF Upload
+## Module 1 - PDF Upload & File Management
 
-Submodules - Upload - Validation - Metadata Deliverables - Multiple PDF
-upload - File management
+Status: Complete
+
+Submodules - Upload - PDF signature and readability validation - 50 MB
+streaming size limit - SQLite-backed metadata - Multiple PDF upload - List
+documents - Delete document and stored file
 
 ## Module 2 - PDF Processing
 
-Submodules - Text extraction - Cleaning - Table extraction
-Deliverables - Parsed text - Clean document
+Status: Complete
+
+Submodules - Text extraction - Cleaning - Text-layout table detection -
+Database persistence of parsed/cleaned text and detected tables
+Deliverables - Parsed text - Clean document - Processing status
 
 ## Module 3 - RAG Indexing
 
-Submodules - Chunking - Embeddings - FAISS Deliverables - Searchable
-vector index
+Submodules - Chunking - Embeddings - FAISS - Database persistence Deliverables - Searchable
+vector index with document/chunk storage
 
 ## Module 4 - Document Intelligence
 

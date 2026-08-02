@@ -48,6 +48,7 @@ node_modules/
 
 # Database
 *.sqlite3
+*.db
 backend/uploads/
 
 # Misc

@@ -1,47 +1,42 @@
-import os
+from pathlib import Path
+
 from fastapi.testclient import TestClient
+
 from backend.main import app
-from backend.services.pdf_upload.upload_service import ensure_upload_dir
-
-client = TestClient(app)
-SIMPLE_PDF = b"%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>\nendobj\n4 0 obj\n<< /Length 44 >>\nstream\nBT /F1 24 Tf 72 120 Td (Hello) Tj ET\nendstream\nendobj\n5 0 obj\n<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>\nendobj\nxref\n0 6\n0000000000 65535 f \n0000000010 00000 n \n0000000061 00000 n \n0000000114 00000 n \n0000000230 00000 n \n0000000326 00000 n \ntrailer\n<< /Root 1 0 R /Size 6 >>\nstartxref\n383\n%%EOF"
+from tests.test_pdf_upload import SIMPLE_PDF
 
 
-def setup_upload_file(filename: str):
-    ensure_upload_dir()
-    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "backend", "uploads")
-    path = os.path.join(upload_dir, filename)
-    with open(path, "wb") as f:
-        f.write(SIMPLE_PDF)
-    return filename
+def test_process_document_by_id_persists_clean_text():
+    with TestClient(app) as client:
+        uploaded = client.post("/api/upload", files=[("files", ("process.pdf", SIMPLE_PDF, "application/pdf"))]).json()["uploads"][0]
+        response = client.post("/api/process", json={"document_ids": [uploaded["id"]]})
+
+        assert response.status_code == 200
+        result = response.json()["processed"][0]
+        assert result["id"] == uploaded["id"]
+        assert result["original_filename"] == "process.pdf"
+        assert result["page_count"] == 1
+        assert "Hello" in result["clean_text"]
+        assert client.get("/api/documents").json()["documents"][0]["status"] == "processed"
 
 
-def cleanup_uploads():
-    upload_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "backend", "uploads")
-    if os.path.isdir(upload_dir):
-        for filename in os.listdir(upload_dir):
-            path = os.path.join(upload_dir, filename)
-            if os.path.isfile(path):
-                os.remove(path)
+def test_process_missing_document_returns_404():
+    with TestClient(app) as client:
+        response = client.post("/api/process", json={"document_ids": [999]})
+    assert response.status_code == 404
 
 
-def test_process_single_pdf():
-    cleanup_uploads()
-    filename = setup_upload_file("process_test.pdf")
-    response = client.post("/api/process", json={"filenames": [filename]})
-    assert response.status_code == 200
-    data = response.json()
-    assert "processed" in data
-    assert len(data["processed"]) == 1
-    result = data["processed"][0]
-    assert result["original_filename"] == filename
-    assert result["stored_filename"] == filename
-    assert result["page_count"] == 1
-    assert "parsed_text" in result
-    assert "clean_text" in result
-    assert isinstance(result["tables"], list)
+def test_infosys_report_end_to_end():
+    report_path = Path(__file__).parent / "infosys-ar-26.pdf"
+    with report_path.open("rb") as report, TestClient(app) as client:
+        uploaded = client.post("/api/documents/upload", files=[("files", (report_path.name, report, "application/pdf"))])
+        assert uploaded.status_code == 201
+        document = uploaded.json()["uploads"][0]
+        processed = client.post("/api/process", json={"document_ids": [document["id"]]})
 
-
-def test_process_missing_file():
-    response = client.post("/api/process", json={"filenames": ["missing.pdf"]})
-    assert response.status_code == 400
+    assert processed.status_code == 200
+    result = processed.json()["processed"][0]
+    assert result["page_count"] == 383
+    assert len(result["parsed_text"]) > 1_000_000
+    assert len(result["clean_text"]) > 1_000_000
+    assert result["tables"]

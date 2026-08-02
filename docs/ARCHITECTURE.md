@@ -2,70 +2,31 @@
 
 ## Overview
 
-AlphaLens consists of two independent AI systems sharing common
-infrastructure.
+AlphaLens contains two products that share a FastAPI backend and persistent
+storage: Financial Document Intelligence and Market Intelligence.
 
-    User
-       |
-    Frontend (Next.js)
-       |
-    Backend (FastAPI)
-       |
-    +---------------------------+
-    |                           |
-    | Financial Document AI     |
-    | Market Intelligence AI    |
-    +---------------------------+
-                |
-         Shared AI Layer
-     (LLM, Embeddings, FAISS,
-     Prompt Engine)
+## Financial Document Pipeline (Modules 1 and 2)
 
-## Module 1 Pipeline
+```text
+PDF upload
+  -> validate filename, PDF signature, size, and readability
+  -> store the PDF in backend/uploads
+  -> persist document metadata in SQLite (or DATABASE_URL)
+  -> extract text with pypdf
+  -> clean text and detect text-layout tables
+  -> persist processing result and status
+```
 
-    Upload PDF
-    ↓
-    PyMuPDF
-    ↓
-    Text Cleaning
-    ↓
-    Chunking
-    ↓
-    Embeddings
-    ↓
-    FAISS
-    ↓
-    Retriever
-    ↓
-    Prompt Builder
-    ↓
-    Gemini
-    ↓
-    Answer
+The database is the source of truth for document IDs and processing state.
+Files are stored on disk and are removed together with their database record.
 
-## Module 2 Pipeline
-
-    Stock Symbol
-    ↓
-    yfinance
-    ↓
-    News RSS / Finnhub
-    ↓
-    FinBERT
-    ↓
-    Recommendation Engine
-    ↓
-    Prompt Builder
-    ↓
-    Gemini
-    ↓
-    Answer
+Module 3 will add chunking, embeddings, and FAISS on top of the persisted
+clean-text records.
 
 ## Shared Components
 
--   Embedding Model
--   FAISS
--   Gemini API
--   Prompt Templates
--   Logging
--   PostgreSQL
+- FastAPI API layer
+- SQLAlchemy persistence layer
+- SQLite during local development; configurable database URL for deployment
+- File storage for uploaded PDFs
+- Future AI layer: embeddings, FAISS, prompts, and LLM integration

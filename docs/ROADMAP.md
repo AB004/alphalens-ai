@@ -11,7 +11,9 @@
 -   Embeddings
 -   FAISS
 
-Milestone: Upload and index multiple PDFs.
+Milestone: Upload, persist, process, and index multiple PDFs. Modules 1 and 2
+provide persistent document storage; Module 3 will add chunk storage and RAG
+indexing.
 
 ## Week 2
 
