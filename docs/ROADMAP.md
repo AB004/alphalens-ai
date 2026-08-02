@@ -5,20 +5,13 @@
 - Module 1: PDF upload, validation, file management, and persistent metadata
 - Module 2: PDF text extraction, cleaning, table-layout detection, and
   persistent processing results
+- Module 3: page-aware chunking, SentenceTransformer embeddings, persisted
+  FAISS indexes, and semantic retrieval with source-page metadata
 
 The foundation is verified against the 383-page Infosys annual report using
-the complete upload → process → list → delete API lifecycle.
+the complete upload → process → index → semantic search → delete API lifecycle.
 
 ## Sprint 1 — Financial Document Intelligence
-
-### Module 3 — RAG Indexing
-
-- Page-aware chunking with document ID, page number, and chunk index metadata
-- SentenceTransformer embeddings
-- Per-document FAISS index persistence
-- `document_chunks` database records and retrieval endpoint
-
-Milestone: Searchable, cited context from one or more uploaded reports.
 
 ### Module 4 — Document Intelligence
 

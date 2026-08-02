@@ -22,7 +22,7 @@ Implemented in Modules 1 and 2. The development default is SQLite at
 -   content_type
 -   size_bytes
 -   page_count
--   status (`uploaded` or `processed`)
+-   status (`uploaded`, `processed`, or `indexed`)
 -   parsed_text
 -   clean_text
 -   tables (JSON)
@@ -31,7 +31,7 @@ Implemented in Modules 1 and 2. The development default is SQLite at
 
 ### document_chunks
 
-Planned for Module 3. Chunk metadata must retain the source location required
+Implemented in Module 3. Chunk metadata retains the source location required
 for citations.
 
 -   id
@@ -41,6 +41,18 @@ for citations.
 -   chunk_text
 -   embedding reference or vector-store key
 -   created_at
+
+### document_indexes
+
+Implemented in Module 3. Each document has one persisted FAISS index.
+
+-   id
+-   document_id
+-   index_path
+-   embedding_model
+-   vector_dimension
+-   chunk_count
+-   indexed_at
 
 ### chat_sessions
 

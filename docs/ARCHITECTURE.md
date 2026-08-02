@@ -5,7 +5,7 @@
 AlphaLens contains two products that share a FastAPI backend and persistent
 storage: Financial Document Intelligence and Market Intelligence.
 
-## Financial Document Pipeline (Modules 1 and 2)
+## Financial Document Pipeline (Modules 1–3)
 
 ```text
 PDF upload
@@ -15,13 +15,17 @@ PDF upload
   -> extract text with pypdf
   -> clean text and detect text-layout tables
   -> persist processing result and status
+  -> create page-aware chunks
+  -> embed chunks with SentenceTransformer
+  -> persist FAISS index and chunk/page metadata
+  -> semantic search with page citations
 ```
 
 The database is the source of truth for document IDs and processing state.
 Files are stored on disk and are removed together with their database record.
 
-Module 3 will add chunking, embeddings, and FAISS on top of the persisted
-clean-text records.
+Modules 1–3 form the persistent retrieval foundation for the document
+intelligence modules that follow.
 
 ## Shared Components
 

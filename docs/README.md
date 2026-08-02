@@ -59,6 +59,6 @@ Deployment: - Docker
 
 ## Current Status
 
-Modules 1 and 2 are complete: PDFs can be uploaded, validated, listed,
-processed, persisted, and deleted through the API. The next milestone is
-page-aware RAG indexing (Module 3).
+Modules 1–3 are complete: PDFs can be uploaded, validated, processed,
+persisted, chunked by page, indexed with FAISS, and searched semantically.
+The next milestone is cited document intelligence (Module 4).

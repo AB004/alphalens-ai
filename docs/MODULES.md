@@ -20,12 +20,13 @@ Deliverables - Parsed text - Clean document - Processing status
 
 ## Module 3 - RAG Indexing
 
-Status: Planned
+Status: Complete
 
 Dependencies: processed documents from Modules 1 and 2
 
 Submodules - Page-aware chunking - Embeddings - FAISS - Database persistence
-Deliverables - Searchable vector index with document/chunk/page storage
+Deliverables - Searchable vector index with document/chunk/page storage -
+Semantic search API with page citations
 
 ## Module 4 - Document Intelligence
 

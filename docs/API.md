@@ -14,6 +14,8 @@ All routes below are prefixed with `/api`.
 | GET | `/documents` | List uploaded documents and their processing status. |
 | DELETE | `/documents/{id}` | Delete document metadata and its stored PDF. |
 | POST | `/process` | Extract, clean, and persist PDF text by `document_ids`. |
+| POST | `/documents/{id}/index` | Create or replace a page-aware FAISS index. |
+| POST | `/documents/{id}/search` | Semantically retrieve indexed chunks with page numbers. |
 
 `POST /upload` remains available as a backwards-compatible upload route.
 
@@ -21,6 +23,18 @@ Example process request:
 
 ```json
 {"document_ids": [1]}
+```
+
+Example index request:
+
+```json
+{"chunk_size": 1200, "chunk_overlap": 200}
+```
+
+Example search request:
+
+```json
+{"query": "What does the report say about artificial intelligence?", "top_k": 5}
 ```
 
 ## RAG

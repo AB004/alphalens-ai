@@ -50,6 +50,7 @@ node_modules/
 *.sqlite3
 *.db
 backend/uploads/
+backend/indexes/
 
 # Misc
 *.swp

@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from backend.schemas.upload import DocumentListResponse, UploadResponse
 from backend.services.pdf_upload.upload_service import handle_pdf_uploads
+from backend.services.rag.index_service import remove_document_index
 from database.crud import delete_document, get_document, list_documents
 from database.session import get_db
 
@@ -43,6 +44,7 @@ def remove_document(document_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Document not found: {document_id}")
 
     storage_path = Path(document.storage_path)
+    remove_document_index(document_id)
     delete_document(db, document)
     storage_path.unlink(missing_ok=True)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
