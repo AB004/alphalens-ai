@@ -1,60 +1,356 @@
 # AlphaLens Roadmap
 
-## Current foundation — complete
+## Vision
 
-- Module 1: PDF upload, validation, file management, and persistent metadata
-- Module 2: PDF text extraction, cleaning, table-layout detection, and
-  persistent processing results
-- Module 3: page-aware chunking, SentenceTransformer embeddings, persisted
-  FAISS indexes, and semantic retrieval with source-page metadata
+AlphaLens is an AI Financial Research Assistant that combines document intelligence, conversation memory, and market intelligence into a single conversational AI system.
 
-The foundation is verified against the 383-page Infosys annual report using
-the complete upload → process → index → semantic search → delete API lifecycle.
+The project is built incrementally across three major sprints, where each sprint builds upon the previous one while remaining modular and independently testable.
 
-## Sprint 1 — Financial Document Intelligence
+---
 
-### Module 4 — Document Intelligence
+# Current Progress
 
-- Structured financial metric extraction with source citations
-- Executive summary, risks, opportunities, and SWOT generation
-- Stored report result for repeatable viewing
+## ✅ Completed Foundation
 
-Milestone: Explainable AI research report for an uploaded company document.
+The core document processing pipeline is fully functional.
 
-### Module 5 — Financial Recommendation
+Completed modules include:
 
-- Transparent rules over extracted financial features
-- Buy / Hold / Sell score, confidence, reasons, and cited evidence
-- Explicit disclaimer that output is educational, not investment advice
+- PDF Upload & File Management
+- PDF Processing
+- RAG Indexing
 
-### Module 6 — Multi-document Chat
+Current capabilities:
 
-- Retrieval, prompt building, and answer citations
-- Single-document and multi-document chat
-- Cross-company comparison with source/page references
+- Upload multiple PDFs
+- Validate PDF files
+- Parse financial reports
+- Clean extracted text
+- Detect text-layout tables
+- Generate page-aware chunks
+- Create SentenceTransformer embeddings
+- Persist FAISS indexes
+- Perform semantic search
+- Return source page citations
 
-Milestone: Complete Financial Document Intelligence workflow.
+This foundation has been tested using large real-world annual reports and forms the retrieval layer for all future AI capabilities.
 
-## Sprint 2 — Market Intelligence
+---
 
-### Modules 7–11
+# Sprint 1 — Financial Document Intelligence
 
-- Company search, statements, and ratios
-- News collection, deduplication, and caching
-- FinBERT sentiment aggregation
-- Explainable market recommendation
-- Company chat grounded in financial data and news
+**Goal**
 
-Milestone: Complete Market Intelligence workflow.
+Transform uploaded financial reports into an interactive AI knowledge base capable of answering questions, generating insights, and remembering conversations.
 
-## Sprint 3 — Resume-ready production release
+---
 
-### Modules 12–14
+## Module 4 — Document Intelligence
 
-- Next.js dashboard, upload, report, comparison, and chat interfaces
-- API, integration, retrieval-quality, and sentiment-validation tests
-- Docker, environment configuration, deployment, and observability
-- README with architecture diagram, demo screenshots, API examples, and
-  measurable evaluation results
+### Objectives
 
-Milestone: AlphaLens v1 — a deployed, demonstrable end-to-end portfolio project.
+- Executive summaries
+- Financial metric extraction
+- SWOT generation
+- Risk identification
+- Opportunity detection
+- Evidence citations
+
+### Milestone
+
+Generate a complete AI research report from an uploaded financial document.
+
+---
+
+## Module 5 — Financial Recommendation Engine
+
+### Objectives
+
+- Extract financial indicators
+- Rule-based scoring
+- Confidence calculation
+- Explainable recommendations
+
+### Milestone
+
+Produce transparent Buy / Hold / Sell recommendations with supporting evidence.
+
+---
+
+## Module 6 — Multi-Document Chat
+
+### Objectives
+
+- Single-document chat
+- Multi-document retrieval
+- Cross-document comparison
+- Citation-aware responses
+- Prompt engineering
+
+### Milestone
+
+Enable conversational interaction with one or multiple financial reports.
+
+---
+
+## Module 6.5 — Conversation Memory
+
+### Objectives
+
+Implement ChatGPT-like conversational memory.
+
+Features include:
+
+### Short-Term Memory
+
+- Recent message retrieval
+- Multi-turn conversations
+- Follow-up question understanding
+
+### Long-Term Memory
+
+- Conversation summarization
+- Memory embeddings
+- Semantic memory retrieval
+- Cross-session conversations
+
+### Context Engineering
+
+Merge:
+
+- Recent chat history
+- Long-term memories
+- Retrieved document chunks
+
+into a single optimized prompt.
+
+### Milestone
+
+An AI assistant capable of remembering previous discussions and continuing conversations naturally.
+
+---
+
+# Sprint 1 Deliverable
+
+A complete Financial Document Intelligence platform capable of:
+
+- Uploading financial reports
+- Searching documents semantically
+- Generating executive summaries
+- Extracting financial metrics
+- Comparing companies
+- Remembering previous conversations
+- Answering follow-up questions naturally
+
+---
+
+# Sprint 2 — Market Intelligence
+
+**Goal**
+
+Expand AlphaLens beyond uploaded documents by integrating live financial data and market news.
+
+---
+
+## Module 7 — Company Intelligence
+
+Features
+
+- Company search
+- Financial statements
+- Financial ratios
+- Historical financial data
+- Cached market information
+
+### Milestone
+
+Interactive company dashboard.
+
+---
+
+## Module 8 — News Intelligence
+
+Features
+
+- Google News RSS
+- Finnhub integration
+- News aggregation
+- Duplicate removal
+- Cached news retrieval
+
+### Milestone
+
+Real-time financial news retrieval.
+
+---
+
+## Module 9 — Sentiment Intelligence
+
+Features
+
+- FinBERT inference
+- Article sentiment
+- Overall market sentiment
+- Confidence scoring
+
+### Milestone
+
+Market sentiment analysis for any company.
+
+---
+
+## Module 10 — AI Recommendation Engine
+
+Features
+
+Combine:
+
+- Financial health
+- Company fundamentals
+- Market sentiment
+
+to generate explainable investment recommendations.
+
+### Milestone
+
+AI-powered Buy / Hold / Sell recommendations.
+
+---
+
+## Module 11 — Company Chat
+
+Features
+
+- Financial data retrieval
+- News retrieval
+- Conversation memory
+- Previous discussion retrieval
+- Multi-turn conversations
+- Explainable answers
+
+### Milestone
+
+A conversational AI capable of answering financial questions using both market data and previous conversations.
+
+---
+
+# Sprint 2 Deliverable
+
+A Market Intelligence platform capable of combining:
+
+- Financial statements
+- Market news
+- Sentiment analysis
+- Company fundamentals
+- Conversation memory
+
+into a single AI assistant.
+
+---
+
+# Sprint 3 — Production & Deployment
+
+**Goal**
+
+Prepare AlphaLens for production deployment.
+
+---
+
+## Module 12 — Frontend
+
+Deliverables
+
+- Dashboard
+- Upload page
+- AI chat interface
+- Company dashboard
+- Conversation history
+- Report viewer
+
+---
+
+## Module 13 — Testing & Evaluation
+
+Deliverables
+
+- API testing
+- Integration testing
+- Retrieval evaluation
+- Memory evaluation
+- Recommendation validation
+- Performance benchmarking
+
+---
+
+## Module 14 — Deployment
+
+Deliverables
+
+- Docker
+- Production configuration
+- Logging
+- Monitoring
+- Environment management
+
+---
+
+# Sprint 3 Deliverable
+
+Production-ready AlphaLens v1.
+
+---
+
+# Long-Term Vision
+
+Future versions of AlphaLens will introduce more advanced AI capabilities.
+
+## Planned Enhancements
+
+### Agentic AI
+
+- Multi-agent workflows
+- Financial analyst agent
+- Research agent
+- Recommendation agent
+
+---
+
+### Advanced Memory
+
+- Personalized user memory
+- Portfolio memory
+- Investment preferences
+- Long-term learning
+
+---
+
+### Portfolio Intelligence
+
+- Portfolio tracking
+- Watchlists
+- Risk analysis
+- Portfolio recommendations
+
+---
+
+### AI Automation
+
+- Scheduled market monitoring
+- Earnings report analysis
+- News alerts
+- Automatic report generation
+
+---
+
+# Final Vision
+
+AlphaLens aims to become a complete AI Financial Research Assistant capable of combining:
+
+- Financial Documents
+- Company Financial Data
+- Market News
+- Sentiment Analysis
+- Conversation Memory
+- Explainable AI
+
+into a unified conversational platform that understands context, remembers previous discussions, and delivers trustworthy financial insights through natural conversations.

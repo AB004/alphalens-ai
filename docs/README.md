@@ -1,64 +1,303 @@
 # AlphaLens
 
-## AI Financial Research Platform
+# AI Financial Research Assistant
 
-AlphaLens is a solo AI project built to learn modern AI application
-development.
+AlphaLens is an end-to-end AI Financial Research Assistant built to learn and demonstrate modern AI application development.
 
-It consists of two independent AI products:
+Unlike a traditional RAG application, AlphaLens combines document intelligence, long-term conversation memory, market intelligence, and LLM-powered reasoning to provide an interactive financial research experience similar to ChatGPT.
 
-## Product A -- Financial Document Intelligence
+---
 
-Upload one or more financial PDFs and: - Summarize documents - Extract
-financial metrics - Detect risks & opportunities - Generate SWOT -
-Explainable Buy / Hold / Sell - Chat with single or multiple PDFs
-(RAG) - Compare companies across reports
+# Vision
 
-### AI Pipeline
+Build an AI assistant capable of:
 
-PDF -\> Parse -\> Chunk -\> Embeddings -\> FAISS -\> Retriever -\> LLM
--\> Answer
+- Understanding financial documents
+- Remembering previous conversations
+- Answering follow-up questions naturally
+- Comparing multiple companies
+- Combining financial statements, market data, and news
+- Providing explainable investment recommendations
 
-------------------------------------------------------------------------
+---
 
-## Product B -- Market Intelligence
+# Product A — Financial Document Intelligence
 
-Enter a stock symbol and: - Fetch company financials - Collect latest
-news - Perform sentiment analysis - Generate financial health score -
-Explainable Buy / Hold / Sell - Chat about the company using retrieved
-data
+Upload one or more financial PDFs and let AlphaLens:
 
-### AI Pipeline
+- Upload and manage multiple documents
+- Parse and clean PDF text
+- Detect text-layout tables
+- Create searchable vector indexes
+- Chat with one or many PDFs
+- Remember previous conversations
+- Generate executive summaries
+- Extract financial metrics
+- Perform SWOT analysis
+- Identify risks and opportunities
+- Compare multiple annual reports
+- Generate explainable Buy / Hold / Sell recommendations
 
-Stock -\> Financial APIs -\> News -\> Sentiment -\> Recommendation -\>
-LLM
+---
 
-## Tech Stack
+## AI Pipeline
 
-Frontend: - Next.js - Tailwind CSS
+```text
+                PDF Upload
+                     │
+                     ▼
+            PDF Processing
+                     │
+                     ▼
+          Page-aware Chunking
+                     │
+                     ▼
+      SentenceTransformer Embeddings
+                     │
+                     ▼
+                 FAISS Index
 
-Backend: - FastAPI - SQLAlchemy - SQLite for local development - PostgreSQL
-for deployment
+                     ▲
+                     │
 
-AI: - Gemini API - SentenceTransformers - FAISS - FinBERT
+          Previous Conversations
+                     │
+             Conversation Memory
+                     │
+            Semantic Memory Search
 
-Data Sources: - yfinance - Google News RSS - Finnhub (Free)
+                     ▲
+                     │
 
-Deployment: - Docker
+              Recent Chat History
 
-## Learning Goals
+                     ▼
 
--   RAG
--   Embeddings
--   Vector Search
--   Prompt Engineering
--   Sentiment Analysis
--   Information Extraction
--   Recommendation Engine
--   Full-stack AI Application Development
+             Context Builder
 
-## Current Status
+                     ▼
 
-Modules 1–3 are complete: PDFs can be uploaded, validated, processed,
-persisted, chunked by page, indexed with FAISS, and searched semantically.
-The next milestone is cited document intelligence (Module 4).
+                  Gemini
+
+                     ▼
+
+              Assistant Response
+
+                     ▼
+
+       Save Conversation History
+
+                     ▼
+
+      Update Long-Term Memory
+```
+
+---
+
+# Product B — Market Intelligence
+
+Search any publicly traded company and let AlphaLens:
+
+- Search companies
+- Fetch financial statements
+- Calculate financial ratios
+- Aggregate market news
+- Perform FinBERT sentiment analysis
+- Generate financial health scores
+- Produce explainable Buy / Hold / Sell recommendations
+- Chat using financial data and market news
+- Continue conversations across sessions
+
+---
+
+## AI Pipeline
+
+```text
+Company Symbol
+       │
+       ▼
+
+ Financial APIs
+       │
+
+ News APIs
+       │
+
+ Sentiment Analysis
+       │
+
+ Financial Analysis
+       │
+
+ Conversation Memory
+       │
+
+ Context Builder
+       │
+
+ Gemini
+       │
+
+ AI Response
+```
+
+---
+
+# Core Features
+
+## Document Intelligence
+
+- Multiple PDF upload
+- Persistent document storage
+- PDF parsing and cleaning
+- Table detection
+- Semantic document search
+- Executive summaries
+- Financial metric extraction
+- SWOT analysis
+- Risk identification
+- Opportunity detection
+
+---
+
+## Conversation Memory
+
+- Persistent chat sessions
+- Multi-turn conversations
+- Previous chat retrieval
+- Long-term memory
+- Conversation summarization
+- Cross-session memory
+- ChatGPT-like follow-up understanding
+
+---
+
+## Market Intelligence
+
+- Company financials
+- Financial ratios
+- News aggregation
+- Sentiment analysis
+- Market recommendation
+- Company comparison
+
+---
+
+## AI Recommendations
+
+- Explainable Buy / Hold / Sell
+- Confidence score
+- Financial reasoning
+- Evidence citations
+- Educational disclaimer
+
+---
+
+# Technology Stack
+
+## Frontend
+
+- Next.js
+- TypeScript
+- Tailwind CSS
+
+---
+
+## Backend
+
+- FastAPI
+- SQLAlchemy
+- SQLite (Development)
+- PostgreSQL (Production)
+
+---
+
+## AI
+
+- Gemini API
+- SentenceTransformers
+- FAISS
+- FinBERT
+- Hybrid Retrieval
+- Conversation Memory
+
+---
+
+## Data Sources
+
+- yfinance
+- Google News RSS
+- Finnhub
+
+---
+
+## Deployment
+
+- Docker
+
+---
+
+# Learning Goals
+
+This project is designed to gain hands-on experience with:
+
+- Retrieval-Augmented Generation (RAG)
+- Hybrid Search
+- Embeddings
+- Vector Databases
+- Prompt Engineering
+- Context Engineering
+- Conversation Memory
+- Long-term Memory Systems
+- Financial Information Extraction
+- Sentiment Analysis
+- Recommendation Systems
+- AI Application Architecture
+- FastAPI
+- Next.js
+- Full-stack AI Development
+
+---
+
+# Current Progress
+
+## Completed
+
+- PDF Upload & File Management
+- PDF Processing
+- Page-aware Chunking
+- FAISS Vector Indexing
+- Semantic Search API
+
+---
+
+## In Progress
+
+- Document Intelligence
+- Financial Recommendation Engine
+- Multi-document Chat
+- Conversation Memory
+
+---
+
+## Planned
+
+- Market Intelligence
+- Company Chat
+- Frontend Dashboard
+- Testing
+- Production Deployment
+
+---
+
+# Final Goal
+
+AlphaLens will become a complete AI Financial Research Assistant capable of combining:
+
+- Financial Documents
+- Company Financial Data
+- Market News
+- Sentiment Analysis
+- Conversation Memory
+
+into a single conversational AI system that can understand context, remember previous discussions, and provide explainable financial insights.

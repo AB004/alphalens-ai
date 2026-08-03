@@ -1,124 +1,457 @@
 # MODULES
 
-# Sprint 1 - Financial Document Intelligence
+# Sprint 1 — Financial Document Intelligence
 
-## Module 1 - PDF Upload & File Management
+Build the foundation for an AI-powered financial document assistant capable of understanding, retrieving, and reasoning over financial reports.
 
-Status: Complete
+---
 
-Submodules - Upload - PDF signature and readability validation - 50 MB
-streaming size limit - SQLite-backed metadata - Multiple PDF upload - List
-documents - Delete document and stored file
+## Module 1 — PDF Upload & File Management
 
-## Module 2 - PDF Processing
+**Status:** ✅ Complete
 
-Status: Complete
+### Submodules
 
-Submodules - Text extraction - Cleaning - Text-layout table detection -
-Database persistence of parsed/cleaned text and detected tables
-Deliverables - Parsed text - Clean document - Processing status
+- Multiple PDF upload
+- PDF signature validation
+- Readability validation
+- 50 MB streaming upload limit
+- Duplicate detection
+- Persistent document metadata
+- List uploaded documents
+- Delete documents and stored files
 
-## Module 3 - RAG Indexing
+### Deliverables
 
-Status: Complete
+- Secure PDF upload
+- Persistent document storage
+- Document management APIs
 
-Dependencies: processed documents from Modules 1 and 2
+---
 
-Submodules - Page-aware chunking - Embeddings - FAISS - Database persistence
-Deliverables - Searchable vector index with document/chunk/page storage -
-Semantic search API with page citations
+## Module 2 — PDF Processing
 
-## Module 4 - Document Intelligence
+**Status:** ✅ Complete
 
-Status: Planned
+**Dependencies**
 
-Submodules - Executive summary - SWOT - Financial metric extraction with
-citations - Risks - Opportunities Deliverables - Stored AI report
+- Module 1
 
-## Module 5 - Recommendation Engine
+### Submodules
 
-Status: Planned
+- PDF text extraction
+- Text cleaning
+- Page preservation
+- Text-layout table detection
+- Parsed content persistence
+- Processing status tracking
 
-Submodules - Financial feature extraction - Rule-based scoring - Confidence
-Deliverables - Buy/Hold/Sell - Reasons - Evidence citations - Disclaimer
+### Deliverables
 
-## Module 6 - Multi Document Chat
+- Parsed text
+- Clean document
+- Detected tables
+- Processing status
 
-Status: Planned
+---
 
-Submodules - Retriever - Prompt builder - Citation support - Multi-document
-comparison Deliverables - Chat with one PDF - Chat with multiple PDFs -
-Compare companies
+## Module 3 — RAG Indexing
 
-==============================
+**Status:** ✅ Complete
 
-# Sprint 2 - Market Intelligence
+**Dependencies**
 
-## Module 7 - Company Data
+- Module 2
 
-Status: Planned
+### Submodules
 
-Submodules - Company search - Financial statements - Ratios
-Deliverables - Company dashboard
+- Page-aware chunking
+- SentenceTransformer embeddings
+- FAISS indexing
+- Chunk metadata persistence
+- Semantic search
+- Page citation support
 
-## Module 8 - News Engine
+### Deliverables
 
-Status: Planned
+- Searchable vector index
+- Document chunk metadata
+- Semantic retrieval API
+- Source page citations
 
-Submodules - Google News RSS - Finnhub - Deduplication Deliverables -
-Latest company news
+---
 
-## Module 9 - Sentiment Analysis
+## Module 4 — Document Intelligence
 
-Status: Planned
+**Status:** Planned
 
-Submodules - FinBERT - Aggregation Deliverables -
-Positive/Negative/Neutral - Overall sentiment
+**Dependencies**
 
-## Module 10 - Recommendation
+- Module 3
 
-Status: Planned
+### Submodules
 
-Submodules - Financial score - Sentiment score - Final weighted score
-Deliverables - Buy/Hold/Sell - Confidence - Explanation
+- Executive summary
+- Financial metric extraction
+- SWOT generation
+- Risk analysis
+- Opportunity analysis
+- Citation generation
 
-## Module 11 - Company Chat
+### Deliverables
 
-Status: Planned
+- AI-generated report
+- Financial metrics
+- SWOT analysis
+- Risk & opportunity report
 
-Submodules - Context builder - Prompt templates - LLM Deliverables -
-Chat using financial data + news
+---
 
-==============================
+## Module 5 — Financial Recommendation Engine
 
-# Sprint 3 - Production
+**Status:** Planned
 
-## Module 12 - Frontend
+**Dependencies**
 
-Status: Planned
+- Module 4
 
-Deliverables - Dashboard - Upload page - Company page - Chat UI
+### Submodules
 
-## Module 13 - Testing
+- Financial feature extraction
+- Rule-based scoring
+- Recommendation engine
+- Confidence calculation
+- Explainable reasoning
 
-Status: Planned
+### Deliverables
 
-Deliverables - API tests - RAG evaluation - Sentiment validation
+- Buy / Hold / Sell recommendation
+- Confidence score
+- Supporting evidence
+- Educational disclaimer
 
-## Module 14 - Deployment
+---
 
-Status: Planned
+## Module 6 — Multi-Document Chat
 
-Deliverables - Docker - Production deployment
+**Status:** Planned
 
-==============================
+**Dependencies**
+
+- Module 3
+
+### Submodules
+
+- Single-document retrieval
+- Multi-document retrieval
+- Context builder
+- Prompt generation
+- Citation support
+- Cross-document comparison
+
+### Deliverables
+
+- Chat with one PDF
+- Chat with multiple PDFs
+- Company comparison
+- Citation-aware responses
+
+---
+
+## Module 6.5 — Conversation Memory & Context Management
+
+**Status:** Planned
+
+**Dependencies**
+
+- Module 6
+
+Unlike traditional RAG applications, AlphaLens maintains conversation history and long-term memory to enable natural, multi-turn conversations similar to ChatGPT.
+
+### Submodules
+
+#### Conversation Management
+
+- Conversation sessions
+- Session titles
+- Conversation lifecycle
+- Chat history
+
+#### Message Management
+
+- Store user messages
+- Store assistant responses
+- Token tracking
+- Message retrieval
+
+#### Short-Term Memory
+
+- Recent conversation retrieval
+- Multi-turn context
+- Follow-up question handling
+
+#### Long-Term Memory
+
+- Conversation summarization
+- Memory embeddings
+- Semantic memory retrieval
+- Cross-session memory
+
+#### Context Engineering
+
+- Merge recent chat history
+- Merge long-term memory
+- Merge retrieved document chunks
+- Token budget management
+- Prompt construction
+
+### Deliverables
+
+- Persistent conversations
+- Chat history
+- Cross-session memory
+- Previous conversation retrieval
+- ChatGPT-like conversational experience
+
+---
+
+# Sprint 1 Milestone
+
+A complete AI Financial Document Assistant capable of:
+
+- Uploading financial reports
+- Understanding document content
+- Performing semantic search
+- Generating financial insights
+- Comparing multiple reports
+- Remembering previous conversations
+- Answering follow-up questions naturally
+
+---
+
+# Sprint 2 — Market Intelligence
+
+Extend AlphaLens beyond uploaded documents by integrating live financial data and market news.
+
+---
+
+## Module 7 — Company Data
+
+**Status:** Planned
+
+### Submodules
+
+- Company search
+- Financial statements
+- Financial ratios
+- Historical financial data
+- Data caching
+
+### Deliverables
+
+- Company dashboard
+- Financial overview
+
+---
+
+## Module 8 — News Engine
+
+**Status:** Planned
+
+### Submodules
+
+- Google News RSS
+- Finnhub integration
+- News aggregation
+- Duplicate removal
+- News caching
+
+### Deliverables
+
+- Latest company news
+- Consolidated news feed
+
+---
+
+## Module 9 — Sentiment Analysis
+
+**Status:** Planned
+
+### Submodules
+
+- FinBERT inference
+- Article sentiment
+- Sentiment aggregation
+- Confidence calculation
+
+### Deliverables
+
+- Positive / Neutral / Negative
+- Overall sentiment score
+
+---
+
+## Module 10 — Market Recommendation Engine
+
+**Status:** Planned
+
+### Submodules
+
+- Financial scoring
+- Sentiment scoring
+- Weighted recommendation
+- Confidence calculation
+- Explainable reasoning
+
+### Deliverables
+
+- Buy / Hold / Sell recommendation
+- Confidence score
+- Financial explanation
+- Sentiment explanation
+
+---
+
+## Module 11 — Company Chat
+
+**Status:** Planned
+
+**Dependencies**
+
+- Modules 7–10
+- Module 6.5
+
+### Submodules
+
+- Company retriever
+- Financial context
+- News context
+- Conversation memory
+- Prompt templates
+- Multi-turn conversations
+
+### Deliverables
+
+- Chat using company financials
+- Chat using news
+- Context-aware conversations
+- Follow-up questions across sessions
+
+---
+
+# Sprint 2 Milestone
+
+A complete AI Financial Research Assistant capable of combining:
+
+- Financial statements
+- Market news
+- Sentiment analysis
+- Conversation memory
+- Explainable reasoning
+
+for intelligent company analysis.
+
+---
+
+# Sprint 3 — Production
+
+Prepare AlphaLens for deployment and real-world usage.
+
+---
+
+## Module 12 — Frontend
+
+**Status:** Planned
+
+### Deliverables
+
+- Dashboard
+- Document management
+- AI chat interface
+- Company dashboard
+- Conversation history
+- Report viewer
+
+---
+
+## Module 13 — Testing & Evaluation
+
+**Status:** Planned
+
+### Deliverables
+
+- API tests
+- Integration tests
+- RAG evaluation
+- Memory evaluation
+- Sentiment validation
+- Recommendation validation
+
+---
+
+## Module 14 — Deployment
+
+**Status:** Planned
+
+### Deliverables
+
+- Docker
+- Production configuration
+- Environment management
+- Monitoring
+- Logging
+
+---
+
+# Sprint 3 Milestone
+
+Production-ready AlphaLens v1.
+
+---
 
 # Final Deliverables
 
-Financial Document Intelligence - Multiple PDF upload - Multi-PDF RAG -
-AI summary - Financial extraction - SWOT - Buy/Hold/Sell - Chat - PDF
-comparison
+## Financial Document Intelligence
 
-Market Intelligence - Stock search - Financial dashboard - News
-aggregation - Sentiment analysis - Financial health score -
-Buy/Hold/Sell - Company chat
+- Multiple PDF upload
+- Persistent document storage
+- PDF processing
+- Multi-PDF RAG
+- AI-generated summaries
+- Financial metric extraction
+- SWOT analysis
+- Risk & opportunity analysis
+- Explainable Buy / Hold / Sell
+- Citation-aware responses
+- Multi-document comparison
+
+---
+
+## Conversation Intelligence
+
+- Persistent chat sessions
+- Chat history
+- Short-term memory
+- Long-term memory
+- Cross-session conversations
+- ChatGPT-like follow-up understanding
+- Context-aware AI responses
+
+---
+
+## Market Intelligence
+
+- Company search
+- Financial statements
+- Financial ratios
+- News aggregation
+- Sentiment analysis
+- Financial health scoring
+- Explainable recommendations
+- Company chat with conversation memory
+
+---
+
+# Final Vision
+
+AlphaLens evolves from a traditional RAG application into a complete AI Financial Research Assistant capable of understanding documents, retrieving market intelligence, remembering previous conversations, and delivering explainable financial insights through natural, context-aware conversations.
