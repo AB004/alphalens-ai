@@ -1,47 +1,15 @@
+
 from typing import Optional
 
 from sqlalchemy.orm import Session
 
-from database.models import Document, DocumentChunk, DocumentIndex
 
+from backend.models import Document, DocumentChunk, DocumentIndex
 
-def create_document(db: Session, **values) -> Document:
-    document = Document(**values)
-    db.add(document)
-    db.commit()
-    db.refresh(document)
-    return document
-
-
-def get_document(db: Session, document_id: int) -> Optional[Document]:
-    return db.get(Document, document_id)
-
-
-def get_document_by_stored_filename(db: Session, stored_filename: str) -> Optional[Document]:
-    return db.query(Document).filter(Document.stored_filename == stored_filename).first()
-
-
-def list_documents(db: Session) -> list[Document]:
-    return db.query(Document).order_by(Document.upload_timestamp.desc()).all()
-
-
-def delete_document(db: Session, document: Document) -> None:
-    db.delete(document)
-    db.commit()
 
 
 def get_document_index(db: Session, document_id: int) -> Optional[DocumentIndex]:
     return db.query(DocumentIndex).filter(DocumentIndex.document_id == document_id).first()
-
-
-def get_chunks_for_document(db: Session, document_id: int) -> list[DocumentChunk]:
-    return (
-        db.query(DocumentChunk)
-        .filter(DocumentChunk.document_id == document_id)
-        .order_by(DocumentChunk.chunk_index)
-        .all()
-    )
-
 
 def replace_document_index(
     db: Session,

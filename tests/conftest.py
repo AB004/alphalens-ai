@@ -7,7 +7,7 @@ os.environ["DATABASE_URL"] = f"sqlite:///{TEST_DATABASE.as_posix()}"
 import pytest
 import numpy as np
 
-from database.session import Base, engine
+from backend.database.session import Base, engine
 
 
 @pytest.fixture(autouse=True)

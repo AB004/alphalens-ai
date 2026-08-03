@@ -7,9 +7,8 @@ from typing import Any, Dict, List
 from fastapi import HTTPException, status
 from pypdf import PdfReader
 from sqlalchemy.exc import SQLAlchemyError
-
-from database.crud import get_document, get_document_by_stored_filename
-from database.session import SessionLocal
+from backend.repositories.document_repository import get_document, get_document_by_stored_filename
+from backend.database.session import SessionLocal
 
 
 UPLOAD_DIR = Path(__file__).resolve().parents[2] / "uploads"

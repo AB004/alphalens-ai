@@ -7,8 +7,8 @@ from fastapi import HTTPException, UploadFile, status
 from pypdf import PdfReader
 from sqlalchemy.exc import SQLAlchemyError
 
-from database.crud import create_document
-from database.session import SessionLocal
+from backend.repositories.document_repository import create_document
+from backend.database.session import SessionLocal
 
 
 UPLOAD_DIR = Path(__file__).resolve().parents[2] / "uploads"

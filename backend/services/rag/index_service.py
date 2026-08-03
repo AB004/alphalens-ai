@@ -9,14 +9,18 @@ from pypdf import PdfReader
 from sqlalchemy.exc import SQLAlchemyError
 
 from backend.services.pdf_processing.process_service import clean_extracted_text
-from database.crud import (
-    delete_document_index,
-    get_chunks_for_document,
+from backend.repositories.document_repository import (
     get_document,
+)
+from backend.repositories.chunk_repository import (
+    get_chunks_for_document,
+)
+from backend.repositories.index_repository import (
     get_document_index,
     replace_document_index,
+    delete_document_index,
 )
-from database.session import SessionLocal
+from backend.database.session import SessionLocal
 
 
 INDEX_DIR = Path(__file__).resolve().parents[2] / "indexes"
@@ -109,7 +113,7 @@ def _serialize_index(document_id: int, document_index) -> dict:
     }
 
 
-def index_document(document_id: int, chunk_size: int, chunk_overlap: int) -> dict:
+def create_document_index(document_id: int, chunk_size: int, chunk_overlap: int) -> dict:
     if chunk_overlap >= chunk_size:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail="chunk_overlap must be smaller than chunk_size.")
 

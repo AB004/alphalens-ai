@@ -1,6 +1,10 @@
 from fastapi import APIRouter
 
-from backend.schemas.rag import IndexRequest, IndexResponse, SearchRequest, SearchResponse
+from backend.schemas.index import (
+    IndexRequest,
+    IndexResponse,
+)
+from backend.schemas.search import  SearchRequest, SearchResponse
 from backend.services.rag.index_service import index_document, search_document
 
 

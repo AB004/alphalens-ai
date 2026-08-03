@@ -1,0 +1,32 @@
+from fastapi import APIRouter
+
+from backend.api.documents.upload import router as upload_router
+from backend.api.documents.processing import router as processing_router
+from backend.api.documents.indexing import router as indexing_router
+from backend.api.documents.search import router as search_router
+
+api_router = APIRouter()
+
+api_router.include_router(
+    upload_router,
+    prefix="/documents",
+    tags=["Documents"],
+)
+
+api_router.include_router(
+    processing_router,
+    prefix="/documents",
+    tags=["Processing"],
+)
+
+api_router.include_router(
+    indexing_router,
+    prefix="/documents",
+    tags=["Indexing"],
+)
+
+api_router.include_router(
+    search_router,
+    prefix="/documents",
+    tags=["Search"],
+)

@@ -1,12 +1,11 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from backend.api.process import router as process_router
-from backend.api.rag import router as rag_router
-from backend.api.upload import router as upload_router
+
+from backend.api.router import api_router
+from backend.database.session import Base,engine
+import backend.models  # Registers all models
 from backend.services.pdf_upload.upload_service import ensure_upload_dir
-from database.models import Document, DocumentChunk, DocumentIndex
-from database.session import Base, engine
 
 
 @asynccontextmanager
@@ -16,7 +15,10 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="AlphaLens Document Intelligence API", version="0.2.0", lifespan=lifespan)
-app.include_router(upload_router, prefix="/api")
-app.include_router(process_router, prefix="/api")
-app.include_router(rag_router, prefix="/api")
+app = FastAPI(
+    title="AlphaLens Document Intelligence API",
+    version="0.2.0",
+    lifespan=lifespan,
+)
+
+app.include_router(api_router, prefix="/api")

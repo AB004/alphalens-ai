@@ -1,0 +1,23 @@
+site_name: AlphaLens
+site_description: AI Financial Research Assistant
+site_author: Akash
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - Architecture: ARCHITECTURE.md
+  - Database: DATABASE.md
+  - Folder Structure: FOLDER_STRUCTURE.md
+  - Modules: MODULES.md
+  - API: API.md
+  - Roadmap: ROADMAP.md
+
+markdown_extensions:
+  - admonition
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight
+  - pymdownx.superfences

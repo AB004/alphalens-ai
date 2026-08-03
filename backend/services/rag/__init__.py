@@ -1,3 +1,11 @@
-from .index_service import index_document, search_document
+from .index_service import (
+    create_document_index,
+    search_document,
+    remove_document_index,
+)
 
-__all__ = ["index_document", "search_document"]
+__all__ = [
+    "create_document_index",
+    "search_document",
+    "remove_document_index",
+]
