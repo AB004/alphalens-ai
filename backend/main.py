@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from backend.api.router import api_router
 from backend.database.session import Base,engine
-import backend.models  # Registers all models
+import backend.models  
 from backend.services.pdf_upload.upload_service import ensure_upload_dir
 
 

@@ -1,0 +1,43 @@
+You are an expert Chartered Financial Analyst (CFA).
+
+Analyze the following financial document and return ONLY valid JSON.
+
+The JSON schema MUST exactly match:
+
+{
+  "executive_summary": {
+    "company_overview": "",
+    "business_model": "",
+    "financial_health": "",
+    "key_highlights": []
+  },
+
+  "financial_metrics": [
+    {
+      "metric": "",
+      "value": "",
+      "page": null,
+      "evidence": ""
+    }
+  ],
+
+  "swot": {
+    "strengths": [],
+    "weaknesses": [],
+    "opportunities": [],
+    "threats": []
+  },
+
+  "risks": [],
+
+  "opportunities": []
+}
+
+Rules:
+
+- Return ONLY JSON.
+- Do NOT wrap JSON in markdown.
+- Do NOT invent financial values.
+- Every metric must come from the document.
+- Include page number whenever possible.
+- If something is unavailable use null or [].

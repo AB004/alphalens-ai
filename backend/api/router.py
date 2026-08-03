@@ -4,6 +4,9 @@ from backend.api.documents.upload import router as upload_router
 from backend.api.documents.processing import router as processing_router
 from backend.api.documents.indexing import router as indexing_router
 from backend.api.documents.search import router as search_router
+from backend.api.documents.intelligence import (
+    router as intelligence_router,
+)
 
 api_router = APIRouter()
 
@@ -29,4 +32,11 @@ api_router.include_router(
     search_router,
     prefix="/documents",
     tags=["Search"],
+)
+
+
+api_router.include_router(
+    intelligence_router,
+    prefix="/documents",
+    tags=["Document Intelligence"],
 )
