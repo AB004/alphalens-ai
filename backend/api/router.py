@@ -7,6 +7,9 @@ from backend.api.documents.search import router as search_router
 from backend.api.documents.intelligence import (
     router as intelligence_router,
 )
+from backend.api.documents.recommendation import (
+    router as recommendation_router,
+)
 
 api_router = APIRouter()
 
@@ -39,4 +42,10 @@ api_router.include_router(
     intelligence_router,
     prefix="/documents",
     tags=["Document Intelligence"],
+)
+
+api_router.include_router(
+    recommendation_router,
+    prefix="/documents",
+    tags=["Recommendation"],
 )
