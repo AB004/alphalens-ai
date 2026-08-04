@@ -4,19 +4,26 @@
 
 AlphaLens exposes a REST API built with FastAPI.
 
-The API is organized into independent modules that mirror the system architecture:
+The API is organized into modular services that mirror the system architecture.
 
-- Authentication
+Current API modules:
+
 - Document Management
 - PDF Processing
-- RAG & Retrieval
-- Conversation Management
-- Memory Management
+- RAG Indexing
 - Document Intelligence
-- Market Intelligence
-- Recommendations
+- Recommendation Engine
+- Multi-Document Chat
+- Conversation Management
 
-All application routes are prefixed with:
+Future modules:
+
+- Authentication
+- Market Intelligence
+- Company Chat
+- Long-Term Memory
+
+All endpoints are prefixed with:
 
 ```text
 /api
@@ -24,35 +31,7 @@ All application routes are prefixed with:
 
 ---
 
-# Authentication
-
-## Register
-
-```http
-POST /auth/register
-```
-
-Creates a new user account.
-
----
-
-## Login
-
-```http
-POST /auth/login
-```
-
-Returns an authentication token.
-
----
-
-## Get Current User
-
-```http
-GET /auth/me
-```
-
-Returns authenticated user information.
+# Current API (Sprint 1)
 
 ---
 
@@ -61,42 +40,34 @@ Returns authenticated user information.
 ## Upload PDFs
 
 ```http
-POST /documents/upload
+POST /api/documents/upload
 ```
 
 Upload one or more PDF files.
 
 ### Features
 
-- Multiple file upload
+- Multiple PDF upload
 - PDF validation
 - Duplicate detection
 - Persistent storage
-
-Response
-
-```json
-{
-    "document_ids": [1,2,3]
-}
-```
 
 ---
 
 ## List Documents
 
 ```http
-GET /documents
+GET /api/documents
 ```
 
-Returns all uploaded documents.
+Returns uploaded documents.
 
 ---
 
 ## Get Document
 
 ```http
-GET /documents/{document_id}
+GET /api/documents/{document_id}
 ```
 
 Returns document metadata.
@@ -106,57 +77,52 @@ Returns document metadata.
 ## Delete Document
 
 ```http
-DELETE /documents/{document_id}
+DELETE /api/documents/{document_id}
 ```
 
-Deletes
+Deletes:
 
 - PDF
-- Metadata
-- Processed text
+- Document metadata
+- Chunk metadata
 - FAISS index
+- AI reports
+- Recommendations
 
 ---
 
 # PDF Processing
 
-## Process Documents
+## Process Document
 
 ```http
-POST /documents/process
+POST /api/documents/{document_id}/process
 ```
 
-Processes uploaded PDFs.
+Processes an uploaded PDF.
 
 ### Operations
 
 - Text extraction
-- Cleaning
+- Text cleaning
 - Table detection
 - Database persistence
-
-Request
-
-```json
-{
-    "document_ids":[1,2]
-}
-```
 
 ---
 
 ## Get Processing Status
 
 ```http
-GET /documents/{document_id}/status
+GET /api/documents/{document_id}/status
 ```
 
-Returns
+Returns document processing status.
 
-- Uploaded
-- Processing
-- Processed
-- Indexed
+Possible values:
+
+- uploaded
+- processed
+- indexed
 
 ---
 
@@ -165,84 +131,131 @@ Returns
 ## Create Index
 
 ```http
-POST /documents/{document_id}/index
+POST /api/documents/{document_id}/index
 ```
 
-Creates a FAISS index.
-
-Request
-
-```json
-{
-    "chunk_size":1200,
-    "chunk_overlap":200
-}
-```
+Creates a FAISS index for semantic retrieval.
 
 ---
 
 ## Search Document
 
 ```http
-POST /documents/{document_id}/search
+POST /api/documents/{document_id}/search
 ```
 
-Semantic search within one document.
+Performs semantic search within a document.
+
+Example
+
+```json
+{
+    "query": "Revenue growth",
+    "top_k": 5
+}
+```
+
+---
+
+# Document Intelligence
+
+## Generate AI Report
+
+```http
+POST /api/documents/{document_id}/analysis
+```
+
+Generates:
+
+- Executive Summary
+- Financial Metrics
+- SWOT Analysis
+- Risk Analysis
+- Opportunity Analysis
+
+---
+
+## Get AI Report
+
+```http
+GET /api/documents/{document_id}/analysis
+```
+
+Returns the stored AI-generated report.
+
+---
+
+# Recommendation Engine
+
+## Generate Recommendation
+
+```http
+POST /api/documents/{document_id}/recommendation
+```
+
+Returns:
+
+- Buy / Hold / Sell
+- Confidence score
+- Financial reasoning
+- Supporting evidence
+
+---
+
+## Get Recommendation
+
+```http
+GET /api/documents/{document_id}/recommendation
+```
+
+Returns the stored recommendation.
+
+---
+
+# Multi-Document Chat
+
+## Chat with Documents
+
+```http
+POST /api/documents/chat
+```
+
+Chat using one or multiple indexed documents.
 
 Request
 
 ```json
 {
-    "query":"Revenue growth",
-    "top_k":5
+    "document_ids": [1,2],
+    "question": "Compare revenue growth."
 }
 ```
 
-Response
+Features:
 
-```json
-{
-    "results":[
-        {
-            "page":42,
-            "score":0.91,
-            "text":"..."
-        }
-    ]
-}
-```
-
----
-
-## Search Multiple Documents
-
-```http
-POST /documents/search
-```
-
-Searches across multiple uploaded documents.
+- Single-document retrieval
+- Multi-document retrieval
+- Citation-aware responses
+- Cross-document comparison
 
 ---
 
 # Conversation Management
 
-Unlike a traditional RAG application, AlphaLens stores conversations and supports long-term memory.
-
----
-
 ## Create Conversation
 
 ```http
-POST /conversations
+POST /api/chat/sessions
 ```
 
-Creates a new conversation.
+Creates a persistent conversation.
 
-Response
+Request
 
 ```json
 {
-    "conversation_id":1
+    "title": "Reliance Analysis",
+    "document_ids": [1]
 }
 ```
 
@@ -251,7 +264,7 @@ Response
 ## List Conversations
 
 ```http
-GET /conversations
+GET /api/chat/sessions
 ```
 
 Returns all conversations.
@@ -261,342 +274,200 @@ Returns all conversations.
 ## Get Conversation
 
 ```http
-GET /conversations/{conversation_id}
+GET /api/chat/sessions/{session_id}
 ```
 
-Returns conversation details.
-
----
-
-## Conversation History
-
-```http
-GET /conversations/{conversation_id}/messages
-```
-
-Returns all messages.
+Returns conversation metadata.
 
 ---
 
 ## Delete Conversation
 
 ```http
-DELETE /conversations/{conversation_id}
+DELETE /api/chat/sessions/{session_id}
 ```
 
-Deletes
-
-- Messages
-- Conversation summary
-- Conversation memory
+Deletes a conversation together with all stored messages.
 
 ---
 
-# Document Chat
-
-## Chat with Documents
+## Send Message
 
 ```http
-POST /chat/document
+POST /api/chat/sessions/{session_id}/messages
 ```
 
-Uses
+Processes a conversational query using:
 
-- Recent conversation
-- Conversation memory
+- Conversation history
 - Retrieved document chunks
-
-Request
-
-```json
-{
-    "conversation_id":1,
-    "document_ids":[1,2],
-    "message":"Compare revenue growth."
-}
-```
-
-Response
-
-```json
-{
-    "response":"...",
-    "citations":[
-        {
-            "document":1,
-            "page":42
-        }
-    ]
-}
-```
-
----
-
-# Company Chat
-
-## Chat with Company
-
-```http
-POST /chat/company
-```
-
-Uses
-
-- Financial statements
-- News
-- Sentiment
-- Previous conversations
-
-Request
-
-```json
-{
-    "conversation_id":5,
-    "symbol":"AAPL",
-    "message":"Is the company financially healthy?"
-}
-```
-
----
-
-# Memory API
-
-The memory system enables ChatGPT-like conversations across multiple sessions.
-
----
-
-## Search Memory
-
-```http
-GET /memory/search
-```
-
-Searches long-term conversation memories.
+- Prompt builder
+- Gemini
 
 Example
 
-```http
-GET /memory/search?query=Tesla
+```json
+{
+    "question": "What was last year's revenue?"
+}
 ```
 
 ---
 
-## List Memories
+## Get Conversation Messages
 
 ```http
-GET /memory
+GET /api/chat/sessions/{session_id}/messages
 ```
 
-Returns stored memories.
+Returns complete conversation history.
 
 ---
 
-## Generate Conversation Summary
+# End-to-End Request Flow
 
-```http
-POST /memory/summarize/{conversation_id}
+```text
+User Request
+
+      │
+
+Conversation Lookup
+
+      │
+
+Recent Message Retrieval
+
+      │
+
+Document Retrieval (FAISS)
+
+      │
+
+Context Builder
+
+      │
+
+Prompt Generation
+
+      │
+
+Gemini
+
+      │
+
+Assistant Response
+
+      │
+
+Store User Message
+
+      │
+
+Store Assistant Message
+
+      │
+
+Return Response
 ```
-
-Creates or updates a conversation summary.
 
 ---
 
-## Delete Memory
+# Planned APIs (Sprint 2)
 
-```http
-DELETE /memory/{memory_id}
-```
-
-Deletes a stored memory.
+The following APIs are planned for future releases.
 
 ---
 
-# Document Intelligence
-
-## Generate AI Report
+## Company Intelligence
 
 ```http
-POST /documents/{document_id}/summary
+GET /api/market/company/{symbol}
 ```
 
-Generates
-
-- Executive summary
-- SWOT
-- Risks
-- Opportunities
-
----
-
-## Extract Financial Metrics
-
-```http
-POST /documents/{document_id}/metrics
-```
-
-Returns structured financial metrics with citations.
-
----
-
-## Generate Recommendation
-
-```http
-POST /documents/{document_id}/recommendation
-```
-
-Returns
-
-- Buy / Hold / Sell
-- Confidence
-- Supporting evidence
-
----
-
-# Market Intelligence
-
-## Search Company
-
-```http
-GET /market/company/{symbol}
-```
-
-Returns company profile.
+Returns company profile and financial information.
 
 ---
 
 ## Financial Statements
 
 ```http
-GET /market/company/{symbol}/financials
+GET /api/market/company/{symbol}/financials
 ```
-
-Returns financial statements.
 
 ---
 
 ## Financial Ratios
 
 ```http
-GET /market/company/{symbol}/ratios
+GET /api/market/company/{symbol}/ratios
 ```
-
-Returns calculated financial ratios.
 
 ---
 
 ## Company News
 
 ```http
-GET /market/company/{symbol}/news
+GET /api/market/company/{symbol}/news
 ```
-
-Returns aggregated news.
 
 ---
 
 ## Sentiment Analysis
 
 ```http
-GET /market/company/{symbol}/sentiment
+GET /api/market/company/{symbol}/sentiment
 ```
-
-Returns
-
-- Positive
-- Neutral
-- Negative
-- Confidence
 
 ---
 
 ## Market Recommendation
 
 ```http
-GET /market/company/{symbol}/recommendation
+GET /api/market/company/{symbol}/recommendation
 ```
-
-Returns
-
-- Buy
-- Hold
-- Sell
-- Explanation
 
 ---
 
-# Health Check
+## Company Chat
 
 ```http
-GET /health
+POST /api/company/chat
 ```
 
-Returns service health.
+Combines:
 
-Example
+- Financial statements
+- Market news
+- Sentiment
+- Conversation memory
 
-```json
-{
-    "status":"healthy"
-}
+---
+
+# Planned APIs (Future)
+
+## Authentication
+
+```http
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/auth/me
 ```
 
 ---
 
-# End-to-End AI Request Flow
+## Advanced Conversation Memory
 
-```text
-User Request
-      │
-      ▼
-
-Conversation Lookup
-
-      │
-      ▼
-
-Recent Messages
-
-      │
-      ▼
-
-Memory Retrieval
-
-      │
-      ▼
-
-Document Retrieval
-
-      │
-      ▼
-
-Market Retrieval
-(optional)
-
-      │
-      ▼
-
-Context Builder
-
-      │
-      ▼
-
-Gemini API
-
-      │
-      ▼
-
-Assistant Response
-
-      │
-      ▼
-
-Save Conversation
-
-      │
-      ▼
-
-Update Conversation Memory
+```http
+GET    /api/memory/search
+POST   /api/memory/summarize/{conversation_id}
+DELETE /api/memory/{memory_id}
 ```
+
+These APIs will support:
+
+- Conversation summarization
+- Semantic memory
+- Cross-session retrieval
 
 ---
 
@@ -606,8 +477,8 @@ The AlphaLens API follows these principles:
 
 - RESTful resource design
 - Stateless request handling
-- Persistent conversation memory
+- Persistent conversation history
 - Modular service boundaries
 - Explainable AI responses with citations
 - Separation of document intelligence and market intelligence
-- Extensible architecture for future agents and tools
+- Extensible architecture for future AI capabilities

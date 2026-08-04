@@ -2,145 +2,106 @@
 
 ## Vision
 
-AlphaLens is an AI Financial Research Assistant that combines document intelligence, conversation memory, and market intelligence into a single conversational AI system.
+AlphaLens is an AI Financial Research Assistant that combines financial document intelligence, conversational memory, retrieval-augmented generation (RAG), and market intelligence into a single AI-powered conversational platform.
 
-The project is built incrementally across three major sprints, where each sprint builds upon the previous one while remaining modular and independently testable.
+The project is developed incrementally across three major sprints. Each sprint is modular, independently testable, and builds upon the previous one.
 
 ---
 
 # Current Progress
 
-## ✅ Completed Foundation
+## ✅ Sprint 1 Complete
 
-The core document processing pipeline is fully functional.
+The complete Financial Document Intelligence platform has been implemented.
 
-Completed modules include:
+### Completed Modules
 
-- PDF Upload & File Management
-- PDF Processing
-- RAG Indexing
+- ✅ PDF Upload & File Management
+- ✅ PDF Processing
+- ✅ RAG Indexing
+- ✅ Document Intelligence
+- ✅ Financial Recommendation Engine
+- ✅ Multi-Document Chat
+- ✅ Conversation Memory & Context Management (MVP)
 
-Current capabilities:
+### Current Capabilities
+
+#### Document Management
 
 - Upload multiple PDFs
-- Validate PDF files
-- Parse financial reports
+- Validate PDF signatures
+- Detect duplicate documents
+- Persistent document storage
+- Document management APIs
+
+#### Document Processing
+
+- Extract PDF text
 - Clean extracted text
+- Preserve page structure
 - Detect text-layout tables
-- Generate page-aware chunks
-- Create SentenceTransformer embeddings
-- Persist FAISS indexes
-- Perform semantic search
-- Return source page citations
+- Store parsed content
 
-This foundation has been tested using large real-world annual reports and forms the retrieval layer for all future AI capabilities.
+#### Retrieval-Augmented Generation (RAG)
 
----
+- Page-aware chunking
+- SentenceTransformer embeddings
+- FAISS vector indexing
+- Semantic document retrieval
+- Page citation support
 
-# Sprint 1 — Financial Document Intelligence
-
-**Goal**
-
-Transform uploaded financial reports into an interactive AI knowledge base capable of answering questions, generating insights, and remembering conversations.
-
----
-
-## Module 4 — Document Intelligence
-
-### Objectives
+#### Financial Intelligence
 
 - Executive summaries
 - Financial metric extraction
-- SWOT generation
-- Risk identification
-- Opportunity detection
-- Evidence citations
+- SWOT analysis
+- Risk analysis
+- Opportunity analysis
+- AI-generated research reports
 
-### Milestone
+#### Recommendation Engine
 
-Generate a complete AI research report from an uploaded financial document.
-
----
-
-## Module 5 — Financial Recommendation Engine
-
-### Objectives
-
-- Extract financial indicators
-- Rule-based scoring
+- Rule-based financial scoring
+- Explainable Buy / Hold / Sell recommendations
 - Confidence calculation
-- Explainable recommendations
+- Supporting evidence generation
 
-### Milestone
-
-Produce transparent Buy / Hold / Sell recommendations with supporting evidence.
-
----
-
-## Module 6 — Multi-Document Chat
-
-### Objectives
+#### AI Chat
 
 - Single-document chat
-- Multi-document retrieval
+- Multi-document chat
 - Cross-document comparison
 - Citation-aware responses
-- Prompt engineering
 
-### Milestone
+#### Conversation Intelligence
 
-Enable conversational interaction with one or multiple financial reports.
-
----
-
-## Module 6.5 — Conversation Memory
-
-### Objectives
-
-Implement ChatGPT-like conversational memory.
-
-Features include:
-
-### Short-Term Memory
-
-- Recent message retrieval
+- Persistent chat sessions
+- Conversation history
 - Multi-turn conversations
 - Follow-up question understanding
+- Context-aware prompting
+- Persistent conversation storage
 
-### Long-Term Memory
-
-- Conversation summarization
-- Memory embeddings
-- Semantic memory retrieval
-- Cross-session conversations
-
-### Context Engineering
-
-Merge:
-
-- Recent chat history
-- Long-term memories
-- Retrieved document chunks
-
-into a single optimized prompt.
-
-### Milestone
-
-An AI assistant capable of remembering previous discussions and continuing conversations naturally.
+Sprint 1 has been successfully tested using large real-world annual reports and now serves as the foundation for all future market intelligence features.
 
 ---
 
-# Sprint 1 Deliverable
+# Sprint 1 — Financial Document Intelligence ✅
 
-A complete Financial Document Intelligence platform capable of:
+### Achievements
 
-- Uploading financial reports
-- Searching documents semantically
-- Generating executive summaries
-- Extracting financial metrics
-- Comparing companies
-- Remembering previous conversations
-- Answering follow-up questions naturally
+AlphaLens can now:
+
+- Upload and manage financial reports
+- Process and clean PDF documents
+- Build semantic vector indexes
+- Perform citation-aware semantic search
+- Generate AI-powered financial research reports
+- Extract financial insights
+- Generate explainable investment recommendations
+- Chat across one or multiple financial reports
+- Maintain persistent conversation history
+- Answer follow-up questions naturally
 
 ---
 
@@ -148,89 +109,115 @@ A complete Financial Document Intelligence platform capable of:
 
 **Goal**
 
-Expand AlphaLens beyond uploaded documents by integrating live financial data and market news.
+Extend AlphaLens beyond uploaded documents by integrating live financial data, market news, and AI-powered market reasoning.
 
 ---
 
 ## Module 7 — Company Intelligence
 
-Features
+**Status:** Planned
+
+### Features
 
 - Company search
+- Company profile
 - Financial statements
 - Financial ratios
 - Historical financial data
-- Cached market information
+- Market data caching
 
-### Milestone
+### Deliverables
 
-Interactive company dashboard.
+- Company dashboard
+- Financial overview
 
 ---
 
 ## Module 8 — News Intelligence
 
-Features
+**Status:** Planned
+
+### Features
 
 - Google News RSS
 - Finnhub integration
 - News aggregation
 - Duplicate removal
-- Cached news retrieval
+- News caching
 
-### Milestone
+### Deliverables
 
-Real-time financial news retrieval.
+- Real-time company news
+- Consolidated news feed
 
 ---
 
 ## Module 9 — Sentiment Intelligence
 
-Features
+**Status:** Planned
+
+### Features
 
 - FinBERT inference
 - Article sentiment
-- Overall market sentiment
+- Sentiment aggregation
 - Confidence scoring
 
-### Milestone
+### Deliverables
 
-Market sentiment analysis for any company.
+- Positive / Neutral / Negative sentiment
+- Overall company sentiment
 
 ---
 
 ## Module 10 — AI Recommendation Engine
 
-Features
+**Status:** Planned
+
+### Features
 
 Combine:
 
-- Financial health
 - Company fundamentals
+- Financial health
+- Historical financial performance
 - Market sentiment
 
 to generate explainable investment recommendations.
 
-### Milestone
+### Deliverables
 
-AI-powered Buy / Hold / Sell recommendations.
+- AI-powered Buy / Hold / Sell recommendations
+- Confidence score
+- Explainable reasoning
 
 ---
 
 ## Module 11 — Company Chat
 
-Features
+**Status:** Planned
+
+**Dependencies**
+
+- Modules 7–10
+- Module 6.5
+
+### Features
 
 - Financial data retrieval
 - News retrieval
+- Hybrid context builder
 - Conversation memory
-- Previous discussion retrieval
+- Prompt engineering
 - Multi-turn conversations
-- Explainable answers
+- Explainable AI responses
 
-### Milestone
+### Deliverables
 
-A conversational AI capable of answering financial questions using both market data and previous conversations.
+- Chat using company financials
+- Chat using live market news
+- Context-aware conversations
+- Persistent company discussions
 
 ---
 
@@ -238,13 +225,14 @@ A conversational AI capable of answering financial questions using both market d
 
 A Market Intelligence platform capable of combining:
 
-- Financial statements
+- Company financial statements
+- Historical financial data
 - Market news
 - Sentiment analysis
-- Company fundamentals
 - Conversation memory
+- Explainable AI
 
-into a single AI assistant.
+into a unified Financial Research Assistant.
 
 ---
 
@@ -258,7 +246,9 @@ Prepare AlphaLens for production deployment.
 
 ## Module 12 — Frontend
 
-Deliverables
+**Status:** Planned
+
+### Deliverables
 
 - Dashboard
 - Upload page
@@ -271,12 +261,14 @@ Deliverables
 
 ## Module 13 — Testing & Evaluation
 
-Deliverables
+**Status:** Planned
+
+### Deliverables
 
 - API testing
 - Integration testing
 - Retrieval evaluation
-- Memory evaluation
+- Conversation evaluation
 - Recommendation validation
 - Performance benchmarking
 
@@ -284,13 +276,15 @@ Deliverables
 
 ## Module 14 — Deployment
 
-Deliverables
+**Status:** Planned
+
+### Deliverables
 
 - Docker
 - Production configuration
+- Environment management
 - Logging
 - Monitoring
-- Environment management
 
 ---
 
@@ -300,40 +294,40 @@ Production-ready AlphaLens v1.
 
 ---
 
-# Long-Term Vision
+# Future Enhancements
 
-Future versions of AlphaLens will introduce more advanced AI capabilities.
+The following features are planned after the MVP.
 
-## Planned Enhancements
+## Advanced Conversation Memory
 
-### Agentic AI
+- Conversation summarization
+- Memory embeddings
+- Semantic memory retrieval
+- Cross-session memory
+- Token tracking
+- Token budget optimization
+
+---
+
+## Agentic AI
 
 - Multi-agent workflows
-- Financial analyst agent
-- Research agent
-- Recommendation agent
+- Financial Analyst Agent
+- Research Agent
+- Recommendation Agent
 
 ---
 
-### Advanced Memory
-
-- Personalized user memory
-- Portfolio memory
-- Investment preferences
-- Long-term learning
-
----
-
-### Portfolio Intelligence
+## Portfolio Intelligence
 
 - Portfolio tracking
 - Watchlists
-- Risk analysis
+- Portfolio risk analysis
 - Portfolio recommendations
 
 ---
 
-### AI Automation
+## AI Automation
 
 - Scheduled market monitoring
 - Earnings report analysis
@@ -350,7 +344,8 @@ AlphaLens aims to become a complete AI Financial Research Assistant capable of c
 - Company Financial Data
 - Market News
 - Sentiment Analysis
+- Retrieval-Augmented Generation (RAG)
 - Conversation Memory
 - Explainable AI
 
-into a unified conversational platform that understands context, remembers previous discussions, and delivers trustworthy financial insights through natural conversations.
+into a unified conversational platform that understands financial documents, remembers previous discussions, retrieves relevant knowledge, and delivers trustworthy financial insights through natural conversations.

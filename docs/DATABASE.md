@@ -1,3 +1,4 @@
+````markdown
 # Database Design
 
 ## Overview
@@ -5,117 +6,92 @@
 AlphaLens uses a hybrid storage architecture where different storage systems are responsible for different types of data.
 
 | Storage | Purpose |
-|---------|---------|
-| PostgreSQL / SQLite | Application data |
-| File Storage | Uploaded PDF files |
-| FAISS | Document and memory embeddings |
+|----------|---------|
+| SQLite / PostgreSQL | Structured application data |
+| File Storage | Uploaded PDF documents |
+| FAISS | Document embeddings for semantic retrieval |
 
-During development, SQLite is used as the default database. For production, PostgreSQL is recommended.
+SQLite is used during development, while PostgreSQL is recommended for production deployments.
 
 ---
 
 # Database Architecture
 
 ```text
-                     Application
+                        Application
 
-                          │
+                             │
 
-        ┌─────────────────┼──────────────────┐
-        ▼                 ▼                  ▼
+        ┌────────────────────┼────────────────────┐
+        ▼                    ▼                    ▼
 
- Relational DB      File Storage      Vector Storage
-(SQLite/PostgreSQL)   (PDFs)             (FAISS)
+ Relational Database     File Storage        Vector Storage
+(SQLite/PostgreSQL)         (PDFs)              (FAISS)
 
-        │                 │                  │
+        │                    │                    │
 
- Users             Uploaded PDFs      Document Embeddings
- Documents                          Conversation Embeddings
- Conversations                     Memory Embeddings
- Market Data
+ Documents          Uploaded PDF Files    Document Embeddings
+ Reports                               Semantic Search Index
  Recommendations
+ Conversations
+ Chat Messages
 ```
 
 ---
 
-# Tables
+# Current Database Schema (Sprint 1)
 
-## users
-
-Stores registered users.
-
-| Column | Type |
-|---------|------|
-| id | INTEGER |
-| name | TEXT |
-| email | TEXT (Unique) |
-| password_hash | TEXT |
-| created_at | TIMESTAMP |
+The following tables are fully implemented.
 
 ---
 
-# Financial Document Tables
-
 ## documents
 
-Stores uploaded document metadata.
+Stores uploaded documents together with processed content.
 
 | Column | Description |
-|---------|-------------|
+|----------|-------------|
 | id | Primary key |
-| user_id | Owner |
-| original_filename | Original PDF name |
+| original_filename | Original PDF filename |
 | stored_filename | Stored filename |
-| storage_path | File path |
+| storage_path | File location |
 | content_type | MIME type |
 | size_bytes | File size |
-| page_count | Number of pages |
+| page_count | Total pages |
+| parsed_text | Raw extracted text |
+| clean_text | Cleaned document text |
+| detected_tables | JSON table information |
 | status | uploaded / processed / indexed |
 | upload_timestamp | Upload time |
 | processed_timestamp | Processing time |
 
 ---
 
-## document_content
-
-Stores processed document content.
-
-| Column | Description |
-|---------|-------------|
-| id | Primary key |
-| document_id | Document |
-| parsed_text | Raw extracted text |
-| clean_text | Cleaned text |
-| detected_tables | JSON table structure |
-| processing_status | Processing state |
-
----
-
 ## document_chunks
 
-Stores page-aware chunks used for RAG.
+Stores page-aware chunks used during Retrieval-Augmented Generation (RAG).
 
 | Column | Description |
-|---------|-------------|
+|----------|-------------|
 | id | Primary key |
 | document_id | Parent document |
 | page_number | Source page |
 | chunk_index | Chunk order |
 | chunk_text | Chunk content |
-| token_count | Chunk size |
+| token_count | Approximate token count |
 | created_at | Timestamp |
 
 ---
 
 ## document_indexes
 
-Stores metadata for FAISS indexes.
+Stores metadata about generated FAISS indexes.
 
 | Column | Description |
-|---------|-------------|
+|----------|-------------|
 | id | Primary key |
-| document_id | Document |
-| index_path | Stored FAISS index |
+| document_id | Related document |
+| index_path | FAISS index path |
 | embedding_model | Embedding model |
 | vector_dimension | Embedding dimension |
 | chunk_count | Indexed chunks |
@@ -123,211 +99,94 @@ Stores metadata for FAISS indexes.
 
 ---
 
-# Conversation System
+## reports
 
-## conversation_sessions
-
-Each chat is stored as a conversation.
+Stores AI-generated financial analysis.
 
 | Column | Description |
-|---------|-------------|
+|----------|-------------|
 | id | Primary key |
-| user_id | Owner |
-| title | Conversation title |
-| type | document / company |
-| created_at | Created |
-| updated_at | Last activity |
-
----
-
-## messages
-
-Stores every message exchanged.
-
-| Column | Description |
-|---------|-------------|
-| id | Primary key |
-| conversation_id | Conversation |
-| role | user / assistant / system |
-| content | Message |
-| token_count | Tokens |
-| created_at | Timestamp |
-
----
-
-# Long-Term Memory
-
-Instead of searching every historical message, AlphaLens periodically summarizes conversations.
-
-These summaries become searchable memories.
-
----
-
-## conversation_summaries
-
-| Column | Description |
-|---------|-------------|
-| id | Primary key |
-| conversation_id | Conversation |
-| summary | AI-generated summary |
-| embedding_key | FAISS reference |
-| updated_at | Last update |
-
-Example
-
-```text
-Conversation
-
-Tesla Annual Report
-
-↓
-
-Summary
-
-Revenue growth
-
-Operating Margin
-
-SWOT
-
-Recommendation
-
-↓
-
-Embedding
-
-↓
-
-Memory Retrieval
-```
-
----
-
-## user_memories
-
-Stores persistent user-specific memories.
-
-Examples
-
-- Preferred language
-- Investment horizon
-- Preferred sectors
-- Frequently analyzed companies
-
-| Column | Description |
-|---------|-------------|
-| id | Primary key |
-| user_id | Owner |
-| memory | Stored memory |
-| embedding_key | FAISS reference |
-| importance | Priority |
-| created_at | Timestamp |
-
----
-
-# Market Intelligence
-
-## companies
-
-Stores company information.
-
-| Column | Description |
-|---------|-------------|
-| symbol | Stock symbol |
-| company_name | Company name |
-| sector | Sector |
-| industry | Industry |
-| exchange | Exchange |
-
----
-
-## financial_statements
-
-Stores retrieved financial data.
-
-| Column | Description |
-|---------|-------------|
-| id | Primary key |
-| symbol | Company |
-| fiscal_year | Year |
-| statement_type | Balance Sheet / Income Statement / Cash Flow |
-| data | JSON |
-| updated_at | Timestamp |
-
----
-
-## news
-
-Stores market news.
-
-| Column | Description |
-|---------|-------------|
-| id | Primary key |
-| symbol | Company |
-| title | News title |
-| summary | Summary |
-| source | Publisher |
-| url | Article URL |
-| published_at | Publish time |
-
----
-
-## sentiment
-
-Stores sentiment analysis results.
-
-| Column | Description |
-|---------|-------------|
-| id | Primary key |
-| news_id | Related article |
-| model | FinBERT |
-| sentiment | Positive / Neutral / Negative |
-| confidence | Model confidence |
-| created_at | Timestamp |
+| document_id | Related document |
+| executive_summary | AI summary |
+| financial_metrics | JSON metrics |
+| swot | SWOT analysis |
+| risks | Risk analysis |
+| opportunities | Opportunity analysis |
 
 ---
 
 ## recommendations
 
-Stores generated investment recommendations.
+Stores AI-generated investment recommendations.
 
 | Column | Description |
-|---------|-------------|
+|----------|-------------|
 | id | Primary key |
-| symbol | Company |
-| financial_score | Financial score |
-| sentiment_score | Sentiment score |
-| final_score | Weighted score |
+| document_id | Related document |
 | recommendation | Buy / Hold / Sell |
-| confidence | Confidence |
+| confidence | Confidence score |
+| score | Overall recommendation score |
 | reasoning | AI explanation |
-| generated_at | Timestamp |
+| created_at | Timestamp |
+
+---
+
+# Conversation System
+
+---
+
+## conversation_sessions
+
+Represents a persistent chat session.
+
+| Column | Description |
+|----------|-------------|
+| id | Primary key |
+| title | Conversation title |
+| document_ids | JSON list of attached documents |
+| settings | Chat settings |
+| created_at | Created timestamp |
+| updated_at | Last activity |
+
+---
+
+## chat_messages
+
+Stores every message exchanged within a conversation.
+
+| Column | Description |
+|----------|-------------|
+| id | Primary key |
+| session_id | Conversation session |
+| role | user / assistant |
+| message | Message text |
+| citations | JSON citations |
+| token_count | Optional token count |
+| created_at | Timestamp |
 
 ---
 
 # Relationships
 
 ```text
-User
- │
- ├───────────────┐
- │               │
- ▼               ▼
+Document
+    │
+    ├───────────────┐
+    │               │
+    ▼               ▼
 
-Documents    Conversations
- │               │
- ▼               ▼
+DocumentChunks    Reports
+    │               │
+    ▼               ▼
 
-Document      Messages
-Content            │
- │                 │
- ▼                 ▼
+DocumentIndexes  Recommendations
 
-Chunks     Conversation Summary
- │                 │
- ▼                 ▼
 
-FAISS      Memory Embeddings
+ConversationSession
+          │
+          ▼
+
+     ChatMessages
 ```
 
 ---
@@ -338,13 +197,14 @@ FAISS      Memory Embeddings
 
 Stores structured application data.
 
-- Users
 - Documents
-- Parsed content
-- Conversations
-- Messages
-- Financial data
+- Processed content
+- Chunk metadata
+- FAISS index metadata
+- AI reports
 - Recommendations
+- Conversation sessions
+- Chat messages
 
 ---
 
@@ -356,50 +216,246 @@ Stores uploaded PDF files.
 
 ## FAISS Vector Storage
 
-Stores embeddings for semantic retrieval.
+Stores document embeddings used for semantic retrieval.
 
-### Document Embeddings
-
-Used for document RAG.
+### Document Retrieval
 
 ```text
 Question
 
-↓
+        │
+        ▼
 
-Document Search
+Question Embedding
 
-↓
+        │
+        ▼
 
-Relevant Chunks
+FAISS Similarity Search
+
+        │
+        ▼
+
+Relevant Document Chunks
+
+        │
+        ▼
+
+Gemini
 ```
+
+Document embeddings power AlphaLens' Retrieval-Augmented Generation (RAG) pipeline.
 
 ---
 
-### Conversation Embeddings
+# Future Database Schema (Sprint 2+)
 
-Used for long-term memory.
+The following tables are planned for future releases.
+
+---
+
+## companies
+
+Stores company metadata.
+
+| Column | Description |
+|----------|-------------|
+| symbol | Stock symbol |
+| company_name | Company name |
+| sector | Sector |
+| industry | Industry |
+| exchange | Exchange |
+
+---
+
+## financial_statements
+
+Stores retrieved financial statements.
+
+| Column | Description |
+|----------|-------------|
+| id | Primary key |
+| symbol | Company |
+| fiscal_year | Fiscal year |
+| statement_type | Balance Sheet / Income Statement / Cash Flow |
+| data | JSON financial data |
+| updated_at | Timestamp |
+
+---
+
+## news
+
+Stores aggregated financial news.
+
+| Column | Description |
+|----------|-------------|
+| id | Primary key |
+| symbol | Company |
+| title | News title |
+| summary | Summary |
+| source | Publisher |
+| url | Article URL |
+| published_at | Published timestamp |
+
+---
+
+## sentiment
+
+Stores sentiment analysis results.
+
+| Column | Description |
+|----------|-------------|
+| id | Primary key |
+| news_id | Related article |
+| model | FinBERT |
+| sentiment | Positive / Neutral / Negative |
+| confidence | Confidence score |
+| created_at | Timestamp |
+
+---
+
+## market_recommendations
+
+Stores market-wide investment recommendations.
+
+| Column | Description |
+|----------|-------------|
+| id | Primary key |
+| symbol | Company |
+| financial_score | Financial score |
+| sentiment_score | Sentiment score |
+| final_score | Combined score |
+| recommendation | Buy / Hold / Sell |
+| confidence | Confidence score |
+| reasoning | AI explanation |
+| generated_at | Timestamp |
+
+---
+
+# Future Conversation Memory
+
+These tables are planned for advanced conversation memory.
+
+---
+
+## conversation_summaries
+
+Stores AI-generated summaries of long conversations.
+
+| Column | Description |
+|----------|-------------|
+| id | Primary key |
+| conversation_id | Conversation |
+| summary | AI summary |
+| embedding_key | FAISS reference |
+| updated_at | Timestamp |
+
+---
+
+## user_memories
+
+Stores persistent user preferences and semantic memories.
+
+Examples:
+
+- Preferred language
+- Investment horizon
+- Favorite sectors
+- Frequently analyzed companies
+
+| Column | Description |
+|----------|-------------|
+| id | Primary key |
+| user_id | Owner |
+| memory | Stored memory |
+| embedding_key | FAISS reference |
+| importance | Priority |
+| created_at | Timestamp |
+
+---
+
+# Planned Future Architecture
 
 ```text
 Question
 
-↓
+      │
 
-Memory Search
+Conversation Summary
+      │
 
-↓
+Semantic Memory Search
+      │
 
-Previous Discussion
+Recent Chat History
+      │
+
+Retrieved Document Chunks
+      │
+
+Company Financial Data
+      │
+
+Market News
+      │
+
+Context Builder
+      │
+
+Gemini
 ```
 
 ---
 
 # Why Hybrid Storage?
 
-Different data requires different storage mechanisms.
+Different data types require different storage technologies.
 
-- Relational databases efficiently manage structured data and relationships.
-- File storage keeps original PDF files without bloating the database.
-- FAISS enables fast semantic search over both document content and conversation memory.
+### Relational Database
 
-This architecture keeps AlphaLens scalable, modular, and efficient while supporting document intelligence, conversational memory, and market intelligence within a single AI platform.
+Efficiently stores structured application data and maintains relationships between documents, reports, recommendations, and conversations.
+
+### File Storage
+
+Stores original uploaded PDF files without increasing database size.
+
+### FAISS
+
+Provides fast semantic similarity search over embedded document chunks, enabling efficient Retrieval-Augmented Generation (RAG).
+
+Future versions of AlphaLens will extend FAISS to support semantic conversation memory and long-term user memories.
+
+---
+
+# Summary
+
+## Sprint 1 (Implemented)
+
+- Documents
+- Document chunks
+- FAISS indexes
+- AI reports
+- Investment recommendations
+- Conversation sessions
+- Chat messages
+
+---
+
+## Sprint 2 (Planned)
+
+- Companies
+- Financial statements
+- News
+- Sentiment analysis
+- Market recommendations
+
+---
+
+## Future Enhancements
+
+- Conversation summaries
+- Semantic memory
+- Cross-session memory
+- User memory
+- Memory embeddings
+````

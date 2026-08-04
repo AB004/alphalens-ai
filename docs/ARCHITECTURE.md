@@ -2,302 +2,207 @@
 
 ## Overview
 
-AlphaLens is an AI Financial Research Assistant designed to analyze financial documents, understand market data, and maintain conversational memory across multiple sessions.
+AlphaLens is an AI Financial Research Assistant that combines document intelligence, Retrieval-Augmented Generation (RAG), persistent conversation memory, and explainable AI to analyze financial reports through natural conversations.
 
-The system combines Retrieval-Augmented Generation (RAG), conversation memory, financial analysis, and market intelligence into a single AI-powered platform.
+The architecture is modular and evolves incrementally across three sprints.
 
-The architecture is divided into four major layers:
+Current implementation focuses on Financial Document Intelligence, while Market Intelligence and advanced AI capabilities are planned for future releases.
 
-1. Financial Document Intelligence
-2. Conversation & Memory System
-3. Market Intelligence
-4. AI Reasoning Layer
+---
+
+# Current Architecture (Sprint 1)
+
+The current system consists of four primary layers.
+
+1. Document Processing
+2. Retrieval-Augmented Generation (RAG)
+3. Conversation & Context Management
+4. AI Reasoning
 
 ---
 
 # High-Level Architecture
 
 ```text
-                           User
-                             │
-                             ▼
-                     FastAPI Backend
-                             │
-         ┌───────────────────┼───────────────────┐
-         ▼                   ▼                   ▼
+                            User
+                              │
+                              ▼
 
- Financial Documents   Conversation Memory   Market Intelligence
+                        FastAPI Backend
 
-         │                   │                   │
+                              │
 
-         ▼                   ▼                   ▼
+      ┌───────────────────────┼────────────────────────┐
+      ▼                       ▼                        ▼
 
-   PDF Processing      Recent Chat        Financial APIs
-         │             Memory Search          News APIs
-         │                   │                   │
-         ▼                   ▼                   ▼
+ Document Processing      Conversation Layer      AI Reasoning
 
-   Vector Database      Memory Store      Sentiment Analysis
+      │                       │                        │
+      ▼                       ▼                        ▼
 
-         └───────────────────┼───────────────────┘
-                             ▼
-
-                     Context Builder
-
-                             ▼
-
-                     Prompt Engineering
-
-                             ▼
-
-                         Gemini API
-
-                             ▼
-
+ PDF Upload          Conversation Sessions      Context Builder
+ PDF Processing       Chat History              Prompt Builder
+ Chunking             Message Storage                │
+ Embeddings           Follow-up Memory              ▼
+ FAISS Search              │                    Gemini API
+      │                    ▼                        │
+      └──────────────► Context ◄────────────────────┘
+                              │
+                              ▼
                      Assistant Response
-
-                             ▼
-
-              Conversation Persistence
-
-                             ▼
-
-             Long-Term Memory Update
+                              │
+                              ▼
+                   Persist Conversation
 ```
 
 ---
 
-# System Components
+# 1. Document Processing Layer
 
-## 1. Financial Document Intelligence
+Responsible for transforming uploaded financial reports into searchable knowledge.
 
-Responsible for understanding uploaded financial reports.
-
-### Workflow
+## Workflow
 
 ```text
 PDF Upload
+
       │
-      ▼
+
 Validation
+
       │
-      ▼
+
 Text Extraction
+
       │
-      ▼
+
 Cleaning
+
       │
-      ▼
+
 Table Detection
+
       │
-      ▼
+
 Database Storage
+
       │
-      ▼
+
 Page-aware Chunking
+
       │
-      ▼
+
 SentenceTransformer Embeddings
+
       │
-      ▼
+
 FAISS Index
 ```
 
 ### Responsibilities
 
-- Upload multiple PDFs
-- Validate files
-- Extract text
-- Detect text-layout tables
-- Clean extracted content
-- Generate page-aware chunks
-- Create embeddings
-- Persist FAISS indexes
-- Support semantic search
+- Multiple PDF upload
+- PDF validation
+- Text extraction
+- Table detection
+- Text cleaning
+- Page-aware chunking
+- Embedding generation
+- FAISS indexing
 
 ---
 
-# 2. Conversation & Memory System
+# 2. Retrieval-Augmented Generation (RAG)
 
-Unlike a traditional RAG application, AlphaLens remembers previous conversations.
+Provides semantic retrieval over uploaded documents.
 
-The memory system is divided into two layers.
-
-## Short-Term Memory
-
-Maintains recent conversation history.
-
-Used for:
-
-- Follow-up questions
-- Pronoun resolution
-- Multi-turn conversations
-
-Example
+## Workflow
 
 ```text
-User:
-Summarize Tesla's report.
+User Question
 
-↓
+      │
 
-Assistant:
-...
+Sentence Embedding
 
-↓
+      │
 
-User:
-Explain the second risk.
+FAISS Similarity Search
 
-↓
+      │
 
-The assistant understands
-"second risk"
-using recent chat history.
+Relevant Chunks
+
+      │
+
+Context Builder
 ```
 
----
+### Responsibilities
 
-## Long-Term Memory
-
-Stores summarized conversations for future sessions.
-
-Instead of storing every message forever, AlphaLens periodically generates conversation summaries.
-
-These summaries are converted into embeddings and indexed for semantic retrieval.
-
-Example
-
-```text
-Conversation Summary
-
-Company:
-Tesla
-
-Topics:
-Revenue
-Margins
-SWOT
-Recommendation
-
-Final Recommendation:
-Hold
-```
-
-When the user later asks:
-
-> Compare it with Nvidia.
-
-The memory retrieval system finds the previous Tesla discussion and includes it in the prompt automatically.
+- Semantic document retrieval
+- Page citation support
+- Multi-document retrieval
+- Cross-document comparison
 
 ---
 
-# Memory Architecture
+# 3. Conversation & Context Management
+
+Unlike traditional RAG applications, AlphaLens maintains persistent conversations.
+
+Conversation history is stored in the relational database and reused for follow-up questions.
+
+## Current Memory Architecture
 
 ```text
-Conversation
+Conversation Session
 
         │
 
-Recent Messages
+Chat Messages
+
 (SQL Database)
 
         │
 
-Conversation Summary
+Recent Conversation
 
         │
 
-Embedding
+Context Builder
 
         │
 
-FAISS Memory Index
-
-        │
-
-Semantic Retrieval
+Gemini
 ```
 
----
+### Current Features
 
-# 3. Market Intelligence
+- Persistent chat sessions
+- Multi-turn conversations
+- Follow-up question handling
+- Conversation history retrieval
+- Context-aware prompting
 
-Provides real-time company information.
-
-### Workflow
-
-```text
-Company Symbol
-
-       │
-
-       ▼
-
-Financial APIs
-
-       │
-
-       ▼
-
-News Collection
-
-       │
-
-       ▼
-
-Deduplication
-
-       │
-
-       ▼
-
-FinBERT Sentiment
-
-       │
-
-       ▼
-
-Financial Analysis
-```
-
-Responsibilities
-
-- Company search
-- Financial statements
-- Financial ratios
-- News aggregation
-- Sentiment analysis
-- Market recommendations
+Conversation history is merged with retrieved document chunks before each LLM request.
 
 ---
 
 # 4. AI Reasoning Layer
 
-This is the core intelligence layer.
-
-Every user request is processed through a context-building pipeline.
+Every user request passes through a unified reasoning pipeline.
 
 ```text
 User Question
 
         │
 
-        ▼
-
-Recent Chat Retrieval
+Retrieve Chat History
 
         │
 
-Memory Retrieval
-
-        │
-
-Document Retrieval
-
-        │
-
-Market Retrieval
+Retrieve Document Chunks
 
         │
 
@@ -314,43 +219,48 @@ Gemini API
         │
 
 Assistant Response
+
+        │
+
+Store Conversation
 ```
 
 ---
 
 # Context Builder
 
-The Context Builder is responsible for combining information from multiple sources into a single prompt.
+The Context Builder combines multiple sources into a single prompt.
 
-Sources include:
+Current sources:
 
 - Recent conversation history
-- Long-term conversation memory
-- Financial document retrieval
+- Retrieved document chunks
+- User question
+
+Future versions will additionally include:
+
 - Company financial data
 - Market news
 - Sentiment analysis
-
-This hybrid context enables natural conversations while grounding responses in factual evidence.
+- Long-term semantic memory
 
 ---
 
-# Data Storage
-
-AlphaLens uses multiple storage systems optimized for different workloads.
+# Storage Architecture
 
 ## Relational Database
 
 Stores structured application data.
 
-Examples:
+Current tables include:
 
-- Users
 - Documents
-- Messages
-- Conversation sessions
-- Financial metrics
+- Document Chunks
+- Document Indexes
+- AI Reports
 - Recommendations
+- Conversation Sessions
+- Chat Messages
 
 ---
 
@@ -360,13 +270,29 @@ Stores uploaded PDF files.
 
 ---
 
-## Vector Database (FAISS)
+## FAISS Vector Storage
 
-Stores embeddings for:
+Stores document embeddings for semantic retrieval.
 
-- Document chunks
-- Conversation summaries
-- Long-term memory
+```text
+Question
+
+      │
+
+Embedding
+
+      │
+
+FAISS Search
+
+      │
+
+Relevant Chunks
+
+      │
+
+Gemini
+```
 
 ---
 
@@ -374,91 +300,154 @@ Stores embeddings for:
 
 ```text
 User Question
-        │
-        ▼
-
-Load Conversation
 
         │
-        ▼
+
+Load Conversation Session
+
+        │
 
 Retrieve Recent Messages
 
         │
-        ▼
 
-Retrieve Long-Term Memories
-
-        │
-        ▼
-
-Retrieve Relevant PDF Chunks
+Retrieve Relevant Document Chunks
 
         │
-        ▼
 
-Retrieve Market Information
-(if required)
+Build Prompt
 
         │
-        ▼
-
-Context Builder
-
-        │
-        ▼
-
-Prompt Engineering
-
-        │
-        ▼
 
 Gemini API
 
         │
-        ▼
 
 Assistant Response
 
         │
-        ▼
 
-Save Conversation
+Save User Message
 
         │
-        ▼
 
-Update Memory
+Save Assistant Message
+
+        │
+
+Return Response
 ```
 
 ---
 
 # Design Principles
 
-The architecture follows these principles:
+The architecture follows several core principles.
 
-- Modular services
+- Modular service-oriented design
 - Separation of concerns
-- Stateless APIs with persistent memory
-- Hybrid Retrieval (Memory + RAG + Market Data)
+- Retrieval-Augmented Generation (RAG)
+- Persistent conversation memory
 - Explainable AI responses with citations
 - Scalable storage architecture
-- Production-ready deployment
-- Extensible AI pipeline for future agents and tools
+- Extensible AI pipeline
+
+---
+
+# Planned Architecture (Sprint 2)
+
+Sprint 2 extends AlphaLens beyond uploaded documents.
+
+Additional components include:
+
+```text
+Company Search
+
+       │
+
+Financial APIs
+
+       │
+
+Market News
+
+       │
+
+Sentiment Analysis
+
+       │
+
+Financial Scoring
+
+       │
+
+Context Builder
+
+       │
+
+Gemini
+```
+
+New capabilities:
+
+- Company financial statements
+- Financial ratios
+- News aggregation
+- Sentiment analysis
+- Market recommendations
+- Company chat
 
 ---
 
 # Future Enhancements
 
-Planned architectural improvements include:
+The following architectural improvements are planned.
 
-- Multi-agent orchestration
+## Advanced Conversation Memory
+
+- Conversation summarization
+- Memory embeddings
+- Semantic memory retrieval
+- Cross-session memory
+- Token budget optimization
+
+---
+
+## AI Capabilities
+
+- Multi-agent workflows
 - Tool calling
 - Function calling
+- Streaming responses
 - Portfolio analysis
 - Watchlists
 - Scheduled market monitoring
-- Streaming LLM responses
 - Multi-modal document understanding
-- Knowledge graph integration
 - MCP (Model Context Protocol) support
+
+---
+
+# Architecture Summary
+
+## Sprint 1 (Implemented)
+
+- Document Processing
+- Retrieval-Augmented Generation
+- AI Financial Intelligence
+- Recommendation Engine
+- Multi-document Chat
+- Persistent Conversation Memory
+
+## Sprint 2 (Planned)
+
+- Company Intelligence
+- News Intelligence
+- Sentiment Analysis
+- Market Recommendation Engine
+- Company Chat
+
+## Sprint 3 (Planned)
+
+- Frontend
+- Testing & Evaluation
+- Production Deployment
