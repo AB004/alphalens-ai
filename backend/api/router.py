@@ -10,6 +10,9 @@ from backend.api.documents.intelligence import (
 from backend.api.documents.recommendation import (
     router as recommendation_router,
 )
+from backend.api.documents.chat import (
+    router as chat_router,
+)
 
 api_router = APIRouter()
 
@@ -48,4 +51,10 @@ api_router.include_router(
     recommendation_router,
     prefix="/documents",
     tags=["Recommendation"],
+)
+
+api_router.include_router(
+    chat_router,
+    prefix="/documents",
+    tags=["Chat"],
 )
