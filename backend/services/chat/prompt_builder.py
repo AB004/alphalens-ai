@@ -11,6 +11,7 @@ class PromptBuilder:
 
     def build(
         self,
+        history: str,
         context: str,
         question: str,
     ) -> str:
@@ -20,14 +21,9 @@ class PromptBuilder:
 
         return (
             self.template
-            .replace(
-                "{context}",
-                context,
-            )
-            .replace(
-                "{question}",
-                question,
-            )
+            .replace("{history}", history)
+            .replace("{context}", context)
+            .replace("{question}", question)
         )
 
 
