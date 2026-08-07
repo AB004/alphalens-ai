@@ -132,7 +132,7 @@ def process_pdf_files(document_ids: List[int] | None = None, filenames: List[str
             document.page_count = processed["page_count"]
             document.size_bytes = processed["size_bytes"]
             document.status = "processed"
-            document.processed_timestamp = datetime.now(timezone.utc)
+            document.processed_timestamp = datetime.utcnow()
             results.append(document)
         db.commit()
         for document in results:

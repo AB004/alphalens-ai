@@ -13,7 +13,7 @@ from backend.database.session import Base
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    return datetime.utcnow()
 
 
 class DocumentReport(Base):

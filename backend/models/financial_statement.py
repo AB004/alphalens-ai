@@ -7,7 +7,6 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
-    Text,
 )
 
 from backend.database.session import Base
@@ -17,8 +16,8 @@ def utc_now() -> datetime:
     return datetime.utcnow()
 
 
-class ChatMessage(Base):
-    __tablename__ = "chat_messages"
+class FinancialStatement(Base):
+    __tablename__ = "financial_statements"
 
     id = Column(
         Integer,
@@ -26,38 +25,55 @@ class ChatMessage(Base):
         index=True,
     )
 
-    session_id = Column(
+    company_id = Column(
         Integer,
         ForeignKey(
-            "conversation_sessions.id",
+            "companies.id",
             ondelete="CASCADE",
         ),
         nullable=False,
         index=True,
     )
 
-    role = Column(
+    statement_type = Column(
+        String(50),
+        nullable=False,
+        index=True,
+    )
+    # income_statement
+    # balance_sheet
+    # cash_flow
+
+    period_type = Column(
         String(20),
         nullable=False,
     )
+    # annual / quarterly
 
-    message = Column(
-        Text,
+    fiscal_year = Column(
+        Integer,
         nullable=False,
     )
 
-    citations = Column(
-        JSON,
-        nullable=True,
+    report_date = Column(
+        String(30),
+        nullable=False,
     )
 
-    token_count = Column(
-        Integer,
-        nullable=True,
+    data = Column(
+        JSON,
+        nullable=False,
     )
 
     created_at = Column(
         DateTime(timezone=True),
         default=utc_now,
+        nullable=False,
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=utc_now,
+        onupdate=utc_now,
         nullable=False,
     )

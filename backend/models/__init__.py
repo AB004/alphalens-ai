@@ -5,6 +5,9 @@ from .report import DocumentReport
 from .recommendation import Recommendation
 from .conversation import ConversationSession
 from .message import ChatMessage
+from .company import Company
+from .financial_statement import FinancialStatement
+from .company_cache import CompanyCache
 
 __all__ = [
     "Document",
@@ -13,5 +16,8 @@ __all__ = [
     "DocumentReport",
     "Recommendation",
     "ConversationSession",
-    "ChatMessage"
+    "ChatMessage",
+    "Company",
+    "FinancialStatement",
+    "CompanyCache"
 ]

@@ -1,24 +1,21 @@
 from datetime import datetime, timezone
 
 from sqlalchemy import (
-    JSON,
     Column,
     DateTime,
     ForeignKey,
     Integer,
-    String,
-    Text,
 )
 
 from backend.database.session import Base
 
 
-def utc_now() -> datetime:
+def utc_now() ->datetime:
     return datetime.utcnow()
 
 
-class ChatMessage(Base):
-    __tablename__ = "chat_messages"
+class CompanyCache(Base):
+    __tablename__ = "company_cache"
 
     id = Column(
         Integer,
@@ -26,38 +23,41 @@ class ChatMessage(Base):
         index=True,
     )
 
-    session_id = Column(
+    company_id = Column(
         Integer,
         ForeignKey(
-            "conversation_sessions.id",
+            "companies.id",
             ondelete="CASCADE",
         ),
+        unique=True,
         nullable=False,
         index=True,
     )
 
-    role = Column(
-        String(20),
-        nullable=False,
-    )
-
-    message = Column(
-        Text,
-        nullable=False,
-    )
-
-    citations = Column(
-        JSON,
+    last_profile_update = Column(
+        DateTime(timezone=True),
         nullable=True,
     )
 
-    token_count = Column(
-        Integer,
+    last_financial_update = Column(
+        DateTime(timezone=True),
         nullable=True,
+    )
+
+    expires_at = Column(
+        DateTime(timezone=True),
+        nullable=False,
     )
 
     created_at = Column(
         DateTime(timezone=True),
         default=utc_now,
+        nullable=False,
+    )
+
+    updated_at = Column(
+        DateTime(timezone=True),
+        default=utc_now,
+        onupdate=utc_now,
         nullable=False,
     )

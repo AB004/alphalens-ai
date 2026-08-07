@@ -7,12 +7,12 @@ theme:
 
 nav:
   - Home: index.md
-  - Architecture: ARCHITECTURE.md
-  - Database: DATABASE.md
-  - Folder Structure: FOLDER_STRUCTURE.md
-  - Modules: MODULES.md
-  - API: API.md
-  - Roadmap: ROADMAP.md
+  - Architecture: architecture.md
+  - Database: database.md
+  - Folder Structure: folder_structure.md
+  - Modules: modules.md
+  - API: api.md
+  - Roadmap: roadmap.md
 
 markdown_extensions:
   - admonition

@@ -19,6 +19,9 @@ from backend.api.chat.conversation import (
 from backend.api.chat.messages import (
     router as message_router,
 )
+from backend.api.company.company import (
+    router as company_router,
+)
 
 api_router = APIRouter()
 
@@ -75,4 +78,10 @@ api_router.include_router(
     message_router,
     prefix="/chat",
     tags=["Messages"],
+)
+
+api_router.include_router(
+    company_router,
+    prefix="/company",
+    tags=["Company"],
 )

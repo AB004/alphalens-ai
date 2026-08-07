@@ -15,7 +15,7 @@ from backend.database.session import Base
 
 
 def utc_now():
-    return datetime.now(timezone.utc)
+    return datetime.utcnow()
 
 
 class Recommendation(Base):
