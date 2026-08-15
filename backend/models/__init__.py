@@ -8,6 +8,8 @@ from .message import ChatMessage
 from .company import Company
 from .financial_statement import FinancialStatement
 from .company_cache import CompanyCache
+from .news import News
+from .news_cache import NewsCache
 
 __all__ = [
     "Document",
@@ -19,5 +21,7 @@ __all__ = [
     "ChatMessage",
     "Company",
     "FinancialStatement",
-    "CompanyCache"
+    "CompanyCache",
+    "News",
+    "NewsCache"
 ]
