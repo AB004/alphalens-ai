@@ -49,6 +49,9 @@ from backend.api.sentiment.sentiment import (
     router as sentiment_router,
 )
 
+from backend.api.company.recommendation import (
+    router as recommendation_router,
+)
 
 api_router = APIRouter()
 
@@ -154,4 +157,10 @@ api_router.include_router(
     sentiment_router,
     prefix="/sentiment",
     tags=["Sentiment"],
+)
+
+api_router.include_router(
+    recommendation_router,
+    prefix="/company",
+    tags=["Market Recommendation"],
 )

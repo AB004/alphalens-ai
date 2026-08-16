@@ -11,7 +11,9 @@ def get_recommendation(
 ) -> Optional[Recommendation]:
     return (
         db.query(Recommendation)
-        .filter(Recommendation.document_id == document_id)
+        .filter(
+            Recommendation.document_id == document_id
+        )
         .first()
     )
 
@@ -73,7 +75,9 @@ def recommendation_exists(
 ) -> bool:
     return (
         db.query(Recommendation)
-        .filter(Recommendation.document_id == document_id)
+        .filter(
+            Recommendation.document_id == document_id
+        )
         .first()
         is not None
     )

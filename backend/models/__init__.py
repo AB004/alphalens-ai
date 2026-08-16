@@ -11,6 +11,7 @@ from .company_cache import CompanyCache
 from .news import News
 from .news_cache import NewsCache
 from backend.models.sentiment import Sentiment
+from backend.models.market_recommendation import MarketRecommendation
 
 __all__ = [
     "Document",
@@ -25,5 +26,6 @@ __all__ = [
     "CompanyCache",
     "News",
     "NewsCache",
-    "Sentiment"
+    "Sentiment",
+    "MarketRecommendation"
 ]

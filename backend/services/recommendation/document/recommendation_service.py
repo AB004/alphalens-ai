@@ -16,7 +16,7 @@ from backend.services.llm.gemini_service import (
     gemini_service,
 )
 
-from backend.services.recommendation.financial_score import (
+from backend.services.recommendation.document.financial_score import (
     FinancialScorer,
 )
 

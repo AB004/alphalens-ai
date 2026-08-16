@@ -164,8 +164,6 @@ def get_company_sentiments(
     )
 
     if provider:
-        provider = provider.strip().lower()
-
         query = query.filter(
             News.provider == provider,
         )

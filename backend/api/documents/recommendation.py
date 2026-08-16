@@ -4,7 +4,7 @@ from backend.schemas.recommendation import (
     RecommendationResponse,
 )
 
-from backend.services.recommendation.recommendation_service import (
+from backend.services.recommendation.document.recommendation_service import (
     generate_recommendation,
     fetch_recommendation,
 )

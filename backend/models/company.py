@@ -6,7 +6,7 @@ from sqlalchemy import (
     Integer,
     String,
 )
-
+from sqlalchemy.orm import relationship
 from backend.database.session import Base
 
 
@@ -76,4 +76,10 @@ class Company(Base):
         default=utc_now,
         onupdate=utc_now,
         nullable=False,
+    )
+
+    market_recommendations = relationship(
+        "MarketRecommendation",
+        back_populates="company",
+        cascade="all, delete-orphan",
     )
