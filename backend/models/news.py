@@ -8,6 +8,7 @@ from sqlalchemy import (
     String,
     Text,
 )
+from sqlalchemy.orm import relationship
 
 from backend.database.session import Base
 
@@ -81,4 +82,11 @@ class News(Base):
         DateTime,
         nullable=False,
         default=datetime.utcnow,
+    )
+
+    sentiment = relationship(
+        "Sentiment",
+        back_populates="news",
+        uselist=False,
+        cascade="all, delete-orphan",
     )

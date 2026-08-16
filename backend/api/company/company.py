@@ -1,4 +1,18 @@
-from fastapi import APIRouter,Query
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Query,
+    status,
+)
+
+from sqlalchemy.orm import Session
+
+from backend.database.session import SessionLocal
+
+from backend.services.sentiment import (
+    sentiment_service,
+)
 
 from backend.schemas.company import (
     CompanyResponse,
@@ -9,6 +23,19 @@ from backend.schemas.company import (
 from backend.services.company.company_service import (
     company_service,
 )
+
+from backend.repositories.company_repository import (
+    get_company_by_symbol,
+)
+
+
+def get_db():
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
 
 router = APIRouter()
 
@@ -82,3 +109,128 @@ def list_companies(
         limit=limit,
     )
 
+@router.get(
+    "/{symbol}/sentiment",
+)
+def get_company_sentiment(
+    symbol: str,
+    limit: int = Query(
+        default=100,
+        ge=1,
+        le=500,
+    ),
+    provider: str | None = Query(
+        default=None,
+    ),
+    db: Session = Depends(get_db),
+):
+    """
+    Return aggregated sentiment for a company.
+
+    Optionally filter by news provider.
+    """
+
+    try:
+
+        return (
+            sentiment_service
+            .get_company_sentiment_by_symbol(
+                db=db,
+                symbol=symbol,
+                limit=limit,
+                provider=provider,
+            )
+        )
+
+    except ValueError as exc:
+
+        message = str(exc)
+
+        if "not found" in message.lower():
+
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=message,
+            )
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=message,
+        )
+
+@router.post(
+    "/{symbol}/sentiment/analyze",
+)
+def analyze_company_sentiment(
+    symbol: str,
+    limit: int = Query(
+        default=100,
+        ge=1,
+        le=500,
+    ),
+    provider: str | None = Query(
+        default=None,
+    ),
+    batch_size: int = Query(
+        default=16,
+        ge=1,
+        le=128,
+    ),
+    db: Session = Depends(get_db),
+):
+    """
+    Analyze unanalyzed news for a company.
+
+    This endpoint performs FinBERT inference.
+    """
+
+    symbol = symbol.strip().upper()
+
+    company = get_company_by_symbol(
+        db,
+        symbol,
+    )
+
+    if company is None:
+
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=(
+                f"Company '{symbol}' not found."
+            ),
+        )
+
+    try:
+
+        results = (
+            sentiment_service
+            .analyze_company_news(
+                db=db,
+                company_id=company.id,
+                limit=limit,
+                batch_size=batch_size,
+                provider=provider,
+            )
+        )
+
+        return {
+            "symbol": company.symbol,
+            "analyzed_count": len(results),
+            "sentiments": results,
+        }
+
+    except ValueError as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(exc),
+        )
+
+    except Exception as exc:
+
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=(
+                "Failed to analyze company news."
+            ),
+        ) from exc

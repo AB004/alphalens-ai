@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 
 from backend.models.news import News
 from backend.models.news_cache import NewsCache
+from backend.models.sentiment import Sentiment
 
 def create_news(
     db: Session,
@@ -77,16 +78,26 @@ def list_news(
     company_id: int,
     skip: int = 0,
     limit: int = 20,
+    provider: str | None = None,
 ):
     """
     Return latest news for a company.
     """
 
-    return (
+    query = (
         db.query(News)
         .filter(
             News.company_id == company_id,
         )
+    )
+
+    if provider:
+        query = query.filter(
+            News.provider == provider.strip().lower()
+        )
+
+    return (
+        query
         .order_by(
             desc(News.published_at),
             desc(News.created_at),
@@ -298,3 +309,73 @@ def create_news_batch(
         db.refresh(news)
 
     return results
+
+def list_latest_news(
+    db: Session,
+    company_id: int,
+    limit: int = 100,
+    provider: str | None = None,
+):
+    """
+    Return the latest news for a company.
+
+    Optionally filter by provider.
+    """
+
+    query = (
+        db.query(News)
+        .filter(
+            News.company_id == company_id,
+        )
+    )
+
+    if provider:
+        query = query.filter(
+            News.provider == provider,
+        )
+
+    return (
+        query
+        .order_by(
+            News.published_at.desc(),
+            News.created_at.desc(),
+        )
+        .limit(limit)
+        .all()
+    )
+
+def filter_unanalyzed_news(
+    db: Session,
+    news_records: list[News],
+) -> list[News]:
+    """
+    Return only news articles that do not yet
+    have a sentiment record.
+    """
+
+    if not news_records:
+        return []
+
+    news_ids = [
+        news.id
+        for news in news_records
+    ]
+
+    existing = (
+        db.query(Sentiment.news_id)
+        .filter(
+            Sentiment.news_id.in_(news_ids),
+        )
+        .all()
+    )
+
+    analyzed_ids = {
+        news_id
+        for (news_id,) in existing
+    }
+
+    return [
+        news
+        for news in news_records
+        if news.id not in analyzed_ids
+    ]

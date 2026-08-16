@@ -149,9 +149,16 @@ class NewsService:
         symbol: str,
         limit: int = 20,
         force_refresh: bool = False,
+        provider: str | None = None,
     ):
 
         symbol = symbol.strip().upper()
+
+        if provider is not None:
+            provider = provider.strip().lower()
+
+            if not provider:
+                provider = None
 
         if not symbol:
             raise HTTPException(
@@ -192,6 +199,7 @@ class NewsService:
                     db,
                     company_id=company_id,
                     limit=limit,
+                    provider=provider,
                 )
 
         finally:

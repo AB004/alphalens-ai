@@ -10,6 +10,7 @@ from .financial_statement import FinancialStatement
 from .company_cache import CompanyCache
 from .news import News
 from .news_cache import NewsCache
+from backend.models.sentiment import Sentiment
 
 __all__ = [
     "Document",
@@ -23,5 +24,6 @@ __all__ = [
     "FinancialStatement",
     "CompanyCache",
     "News",
-    "NewsCache"
+    "NewsCache",
+    "Sentiment"
 ]

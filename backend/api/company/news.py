@@ -15,32 +15,25 @@ router = APIRouter()
 
 @router.get(
     "/{symbol}/news",
-    response_model=NewsListResponse,
 )
 def get_company_news(
     symbol: str,
     limit: int = Query(
         default=20,
         ge=1,
-        le=100,
+        le=500,
     ),
-    refresh: bool = Query(
-        default=False,
+    provider: str | None = Query(
+        default=None,
     ),
+    force_refresh: bool = False,
 ):
-
-    articles = news_service.get_news(
+    return news_service.get_news(
         symbol=symbol,
         limit=limit,
-        force_refresh=refresh,
+        force_refresh=force_refresh,
+        provider=provider,
     )
-
-    return {
-        "symbol": symbol.upper(),
-        "count": len(articles),
-        "articles": articles,
-    }
-
 
 @router.get(
     "/{symbol}/news/count",
