@@ -1,5 +1,5 @@
 
-from backend.services.company_chat.company_chat_prompt_builder import (
+from backend.services.company_chat.company_prompt_builder import (
     company_chat_prompt_builder,
 )
 

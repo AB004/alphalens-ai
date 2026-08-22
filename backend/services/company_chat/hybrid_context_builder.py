@@ -1,7 +1,7 @@
 from dataclasses import asdict
 from typing import Any
 
-from backend.services.company_chat.context_builder import (
+from backend.services.company_chat.company_context_builder import (
     CompanyChatContext,
 )
 

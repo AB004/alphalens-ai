@@ -5,7 +5,7 @@ from backend.models.market_recommendation import (
 )
 
 
-def create_market_recommendation(
+def create_company_recommendation(
     db: Session,
     company_id: int,
     recommendation: str,
@@ -22,7 +22,7 @@ def create_market_recommendation(
     model_version: str = "v1",
 ):
     """
-    Create a market recommendation for a company.
+    Create a company recommendation.
     """
 
     result = MarketRecommendation(
@@ -48,12 +48,12 @@ def create_market_recommendation(
     return result
 
 
-def get_market_recommendation_by_id(
+def get_company_recommendation_by_id(
     db: Session,
     recommendation_id: int,
 ):
     """
-    Retrieve a market recommendation by ID.
+    Retrieve a company recommendation by ID.
     """
 
     return (
@@ -66,12 +66,12 @@ def get_market_recommendation_by_id(
     )
 
 
-def get_latest_market_recommendation(
+def get_latest_company_recommendation(
     db: Session,
     company_id: int,
 ):
     """
-    Return the latest market recommendation
+    Return the latest company recommendation
     for a company.
     """
 
@@ -88,14 +88,14 @@ def get_latest_market_recommendation(
     )
 
 
-def list_market_recommendations(
+def list_company_recommendations(
     db: Session,
     company_id: int,
     skip: int = 0,
     limit: int = 20,
 ):
     """
-    Return market recommendation history
+    Return company recommendation history
     for a company.
     """
 
@@ -114,7 +114,7 @@ def list_market_recommendations(
     )
 
 
-def update_market_recommendation(
+def update_company_recommendation(
     db: Session,
     recommendation: MarketRecommendation,
     recommendation_value: str,
@@ -131,7 +131,7 @@ def update_market_recommendation(
     model_version: str = "v1",
 ):
     """
-    Update an existing market recommendation.
+    Update an existing company recommendation.
     """
 
     recommendation.recommendation = (
@@ -177,16 +177,16 @@ def update_market_recommendation(
     return recommendation
 
 
-def delete_market_recommendation(
+def delete_company_recommendation(
     db: Session,
     recommendation_id: int,
 ):
     """
-    Delete a market recommendation by ID.
+    Delete a company recommendation by ID.
     """
 
     recommendation = (
-        get_market_recommendation_by_id(
+        get_company_recommendation_by_id(
             db,
             recommendation_id,
         )
@@ -201,7 +201,7 @@ def delete_market_recommendation(
     return True
 
 
-def upsert_latest_market_recommendation(
+def upsert_latest_company_recommendation(
     db: Session,
     company_id: int,
     recommendation: str,
@@ -218,18 +218,18 @@ def upsert_latest_market_recommendation(
     model_version: str = "v1",
 ):
     """
-    Create a market recommendation if one does not
+    Create a company recommendation if one does not
     exist. Otherwise update the latest recommendation.
     """
 
-    existing = get_latest_market_recommendation(
+    existing = get_latest_company_recommendation(
         db,
         company_id,
     )
 
     if existing is None:
 
-        return create_market_recommendation(
+        return create_company_recommendation(
             db=db,
             company_id=company_id,
             recommendation=recommendation,
@@ -241,13 +241,15 @@ def upsert_latest_market_recommendation(
             sentiment_reasoning=sentiment_reasoning,
             overall_reasoning=overall_reasoning,
             confidence_reasoning=confidence_reasoning,
+            sentiment_limit=sentiment_limit,
+            sentiment_provider=sentiment_provider,
             model_version=model_version,
         )
 
-    return create_market_recommendation(
+    return update_company_recommendation(
         db=db,
-        company_id=company_id,
-        recommendation=recommendation,
+        recommendation=existing,
+        recommendation_value=recommendation,
         score=score,
         confidence=confidence,
         financial_score=financial_score,

@@ -5,10 +5,10 @@ from tests.test_pdf_upload import SIMPLE_PDF
 
 
 def upload_and_process_document(client: TestClient) -> int:
-    uploaded = client.post("/api/upload", files=[("files", ("rag.pdf", SIMPLE_PDF, "application/pdf"))])
-    assert uploaded.status_code == 200
+    uploaded = client.post("/api/documents/upload", files=[("files", ("rag.pdf", SIMPLE_PDF, "application/pdf"))])
+    assert uploaded.status_code == 201
     document_id = uploaded.json()["uploads"][0]["id"]
-    processed = client.post("/api/process", json={"document_ids": [document_id]})
+    processed = client.post("/api/documents/process", json={"document_ids": [document_id]})
     assert processed.status_code == 200
     return document_id
 
@@ -36,7 +36,7 @@ def test_index_and_search_processed_document():
 
 def test_index_requires_processed_document():
     with TestClient(app) as client:
-        uploaded = client.post("/api/upload", files=[("files", ("not-processed.pdf", SIMPLE_PDF, "application/pdf"))])
+        uploaded = client.post("/api/documents/upload", files=[("files", ("not-processed.pdf", SIMPLE_PDF, "application/pdf"))])
         document_id = uploaded.json()["uploads"][0]["id"]
         response = client.post(f"/api/documents/{document_id}/index", json={})
 

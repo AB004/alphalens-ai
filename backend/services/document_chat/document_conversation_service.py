@@ -9,13 +9,7 @@ from backend.repositories.conversation_repository import (
     list_sessions,
     update_session,
 )
-from backend.repositories.message_repository import (
-    create_message,
-    list_messages
-)
-
-
-class ConversationService:
+class DocumentConversationService:
 
     def create(
         self,
@@ -140,84 +134,4 @@ class ConversationService:
         finally:
             db.close()
 
-    def add_user_message(
-        self,
-        session_id: int,
-        message: str,
-    ):
-
-        db = SessionLocal()
-
-        try:
-
-            session = get_session(
-                db,
-                session_id,
-            )
-
-            if session is None:
-                raise HTTPException(
-                    status_code=404,
-                    detail="Conversation not found.",
-                )
-
-            return create_message(
-                db,
-                session_id=session_id,
-                role="user",
-                message=message,
-            )
-
-        finally:
-            db.close()
-
-    def add_assistant_message(
-        self,
-        session_id: int,
-        message: str,
-        citations=None,
-    ):
-
-        db = SessionLocal()
-
-        try:
-
-            return create_message(
-                db,
-                session_id=session_id,
-                role="assistant",
-                message=message,
-                citations=citations or [],
-            )
-
-        finally:
-            db.close()
-    def get_messages(
-        self,
-        session_id: int,
-    ):
-
-        db = SessionLocal()
-
-        try:
-
-            session = get_session(
-                db,
-                session_id,
-            )
-
-            if session is None:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Conversation not found.",
-                )
-
-            return list_messages(
-                db,
-                session_id=session_id,
-            )
-
-        finally:
-            db.close()
-
-conversation_service = ConversationService()
+document_conversation_service = DocumentConversationService()

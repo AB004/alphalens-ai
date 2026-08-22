@@ -1,10 +1,10 @@
 from dataclasses import dataclass
 
-from backend.services.recommendation.market.recommendation_aggregation import (
+from backend.services.recommendation.company_recommendation.recommendation_aggregation import (
     RecommendationResult,
 )
 
-from backend.services.recommendation.market.confidence_calculator import (
+from backend.services.recommendation.company_recommendation.confidence_calculator import (
     ConfidenceResult,
 )
 

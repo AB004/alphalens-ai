@@ -1,6 +1,6 @@
-import os
 from pathlib import Path
 from typing import Protocol
+import os
 
 import faiss
 import numpy as np
@@ -12,19 +12,20 @@ from backend.services.pdf_processing.process_service import clean_extracted_text
 from backend.repositories.document_repository import (
     get_document,
 )
-from backend.repositories.chunk_repository import (
+from backend.repositories.document_chunk_repository import (
     get_chunks_for_document,
 )
-from backend.repositories.index_repository import (
+from backend.repositories.document_index_repository import (
     get_document_index,
     replace_document_index,
     delete_document_index,
 )
 from backend.database.session import SessionLocal
+from backend.core.config import settings
 
 
 INDEX_DIR = Path(__file__).resolve().parents[2] / "indexes"
-DEFAULT_EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
+DEFAULT_EMBEDDING_MODEL = settings.embedding_model
 
 
 class Embedder(Protocol):

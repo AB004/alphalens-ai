@@ -2,11 +2,11 @@ from fastapi import HTTPException, status
 
 from backend.database.session import SessionLocal
 
-from backend.repositories.report_repository import (
+from backend.repositories.document_report_repository import (
     get_report,
 )
 
-from backend.repositories.recommendation_repository import (
+from backend.repositories.document_recommendation_repository import (
     get_recommendation,
     create_recommendation,
     update_recommendation,
@@ -16,8 +16,8 @@ from backend.services.llm.gemini_service import (
     gemini_service,
 )
 
-from backend.services.recommendation.document.financial_score import (
-    FinancialScorer,
+from backend.services.recommendation.document_recommendation.document_financial_scorer import (
+    DocumentFinancialScorer,
 )
 
 from backend.utils.prompt_loader import (
@@ -59,7 +59,7 @@ def generate_recommendation(document_id: int):
             "opportunities": report.opportunities,
         }
 
-        scorer = FinancialScorer(report_data)
+        scorer = DocumentFinancialScorer(report_data)
 
         result = scorer.calculate()
 

@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from backend.repositories.financial_repository import (
+from backend.repositories.company_financial_repository import (
     get_latest_financials,
 )
 

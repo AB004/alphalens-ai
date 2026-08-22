@@ -10,7 +10,7 @@ from backend.repositories.company_repository import (
 from backend.services.company.company_service import (
     company_service,
 )
-from backend.repositories.news_repository import (
+from backend.repositories.company_news_repository import (
     create_news_batch,
     get_cache,
     cache_expired,

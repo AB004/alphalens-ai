@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from backend.services.recommendation.market.score_normalization import (
+from backend.services.recommendation.company_recommendation.score_normalization import (
     NormalizedScores,
 )
 

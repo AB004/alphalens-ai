@@ -6,7 +6,7 @@ HOLD_THRESHOLD = 50
 MAX_SCORE = 100
 
 
-class FinancialScorer:
+class DocumentFinancialScorer:
 
     def __init__(self, report: dict[str, Any]):
         self.report = report

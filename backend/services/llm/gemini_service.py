@@ -1,29 +1,24 @@
 import json
-import os
 from typing import Any
 
-from dotenv import load_dotenv
 from google import genai
 from google.genai.types import GenerateContentConfig
 
-load_dotenv()
+from backend.core.config import settings
 
 
 class GeminiService:
     """Wrapper around the Gemini API."""
 
     def __init__(self) -> None:
-        api_key = os.getenv("GEMINI_API_KEY")
+        api_key = settings.gemini_api_key
 
         if not api_key:
             raise RuntimeError("GEMINI_API_KEY is not configured.")
 
         self.client = genai.Client(api_key=api_key)
 
-        self.model = os.getenv(
-            "GEMINI_MODEL",
-            "gemini-3.5-flash",
-        )
+        self.model = settings.gemini_model
 
     def generate_text(
         self,

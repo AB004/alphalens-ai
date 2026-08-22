@@ -6,49 +6,49 @@ from backend.repositories.company_repository import (
     get_company_by_symbol,
 )
 
-from backend.repositories.financial_repository import (
+from backend.repositories.company_financial_repository import (
     get_latest_financials,
 )
 
-from backend.repositories.sentiment_repository import (
+from backend.repositories.news_sentiment_repository import (
     get_company_sentiments,
 )
 
-from backend.repositories.market_recommendation_repository import (
-    create_market_recommendation,
-    get_latest_market_recommendation,
-    update_market_recommendation,
+from backend.repositories.company_recommendation_repository import (
+    create_company_recommendation,
+    get_latest_company_recommendation,
+    update_company_recommendation,
 )
 
-from backend.services.recommendation.market.financial_feature_extractor import (
+from backend.services.recommendation.company_recommendation.financial_feature_extractor import (
     financial_feature_extractor,
 )
 
-from backend.services.recommendation.market.financial_scoring import (
+from backend.services.recommendation.company_recommendation.financial_scoring import (
     financial_scoring_engine,
 )
 
-from backend.services.recommendation.market.sentiment_scoring import (
+from backend.services.recommendation.company_recommendation.sentiment_scoring import (
     sentiment_scoring_engine,
 )
 
-from backend.services.recommendation.market.score_normalization import (
+from backend.services.recommendation.company_recommendation.score_normalization import (
     score_normalizer,
 )
 
-from backend.services.recommendation.market.recommendation_aggregation import (
+from backend.services.recommendation.company_recommendation.recommendation_aggregation import (
     recommendation_aggregation_engine,
 )
 
-from backend.services.recommendation.market.confidence_calculator import (
+from backend.services.recommendation.company_recommendation.confidence_calculator import (
     confidence_calculator,
 )
 
-from backend.services.recommendation.market.explainable_reasoning import (
+from backend.services.recommendation.company_recommendation.explainable_reasoning import (
     explainable_reasoning_engine,
 )
 
-from backend.services.recommendation.market.market_recommendation_cache import (
+from backend.services.recommendation.company_recommendation.company_recommendation_cache import (
     MARKET_RECOMMENDATION_CACHE_TTL_MINUTES,
     get_cache_age_seconds,
     get_recommendation_expiry,
@@ -56,7 +56,7 @@ from backend.services.recommendation.market.market_recommendation_cache import (
 )
 
 
-class MarketRecommendationService:
+class CompanyRecommendationService:
     """
     End-to-end Module 10 recommendation service.
 
@@ -117,7 +117,7 @@ class MarketRecommendationService:
         # CACHE CHECK
         # -----------------------------------------------------
 
-        existing = get_latest_market_recommendation(
+        existing = get_latest_company_recommendation(
             db=db,
             company_id=company.id,
         )
@@ -328,14 +328,14 @@ class MarketRecommendationService:
         the latest recommendation.
         """
 
-        existing = get_latest_market_recommendation(
+        existing = get_latest_company_recommendation(
             db=db,
             company_id=company.id,
         )
 
         if existing is None:
 
-            return create_market_recommendation(
+            return create_company_recommendation(
                 db=db,
                 company_id=company.id,
                 recommendation=(
@@ -366,7 +366,7 @@ class MarketRecommendationService:
                 model_version="v1",
             )
 
-        return update_market_recommendation(
+        return update_company_recommendation(
             db=db,
             recommendation=existing,
             recommendation_value=(
@@ -483,6 +483,6 @@ class MarketRecommendationService:
         }
 
 
-market_recommendation_service = (
-    MarketRecommendationService()
+company_recommendation_service = (
+    CompanyRecommendationService()
 )

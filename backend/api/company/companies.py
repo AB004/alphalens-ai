@@ -8,7 +8,7 @@ from fastapi import (
 
 from sqlalchemy.orm import Session
 
-from backend.database.session import SessionLocal
+from backend.api.dependencies import get_db
 
 from backend.services.sentiment import (
     sentiment_service,
@@ -27,15 +27,6 @@ from backend.services.company.company_service import (
 from backend.repositories.company_repository import (
     get_company_by_symbol,
 )
-
-
-def get_db():
-    db = SessionLocal()
-
-    try:
-        yield db
-    finally:
-        db.close()
 
 router = APIRouter()
 

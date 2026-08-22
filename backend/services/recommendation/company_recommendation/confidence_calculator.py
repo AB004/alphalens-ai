@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from backend.services.recommendation.market.recommendation_aggregation import (
+from backend.services.recommendation.company_recommendation.recommendation_aggregation import (
     RecommendationResult,
 )
 

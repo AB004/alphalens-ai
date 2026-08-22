@@ -4,11 +4,11 @@ from backend.services.company_chat.company_resolver import (
     company_resolver,
 )
 
-from backend.services.company_chat.question_classifier import (
+from backend.services.company_chat.company_question_classifier import (
     question_classifier,
 )
 
-from backend.services.company_chat.context_builder import (
+from backend.services.company_chat.company_context_builder import (
     company_context_builder,
 )
 
@@ -16,12 +16,12 @@ from backend.services.company_chat.company_conversation_service import (
     company_conversation_service,
 )
 
-from backend.services.chat.memory_service import (
+from backend.services.conversation.memory_service import (
     memory_service,
 )
 
-from backend.services.chat.conversation_service import (
-    conversation_service,
+from backend.services.conversation.message_service import (
+    conversation_message_service,
 )
 
 from backend.services.company_chat.exceptions import (
@@ -33,7 +33,7 @@ from backend.services.company_chat.financial_context_retriever import (
     financial_context_retriever,
 )
 
-from backend.services.company_chat.question_classifier import (
+from backend.services.company_chat.company_question_classifier import (
     CompanyQuestionType,
 )
 
@@ -53,20 +53,16 @@ from backend.services.company_chat.recommendation_context_retriever import (
     recommendation_context_retriever,
 )
 
-from backend.services.company_chat.response_generator import (
+from backend.services.company_chat.company_response_generator import (
     company_chat_response_generator,
 )
 
-from backend.services.company_chat.source_builder import (
+from backend.services.company_chat.company_source_builder import (
     company_chat_source_builder,
 )
 
-from backend.services.company_chat.followup_resolver import (
+from backend.services.company_chat.company_followup_resolver import (
     followup_resolver,
-)
-
-from backend.services.company_chat.conversation_validator import (
-    company_conversation_validator,
 )
 
 class CompanyChatService:
@@ -108,27 +104,8 @@ class CompanyChatService:
             symbol=symbol,
         )
 
-        if conversation_id is not None:
-        
-            conversation = company_conversation_validator.validate(
-                db=db,
-                conversation_id=conversation_id,
-                company_id=company.id,
-            )
-
-        else:
-
-            conversation = (
-                company_conversation_service.get_or_create(
-                    db=db,
-                    company=company,
-                    conversation_id=None,
-                )
-            )
-
-
         # --------------------------------------------
-        # 2. Resolve/create conversation
+        # 2. Resolve or create a company conversation
         # --------------------------------------------
 
         conversation = (
@@ -326,7 +303,7 @@ class CompanyChatService:
         conversation_id: int,
         message: str,
     ):
-        return conversation_service.add_user_message(
+        return conversation_message_service.add_user_message(
             session_id=conversation_id,
             message=message,
         )
@@ -341,7 +318,7 @@ class CompanyChatService:
         message: str,
         citations: list | None = None,
     ):
-        return conversation_service.add_assistant_message(
+        return conversation_message_service.add_assistant_message(
             session_id=conversation_id,
             message=message,
             citations=citations or [],

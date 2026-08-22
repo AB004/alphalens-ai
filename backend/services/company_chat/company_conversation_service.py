@@ -2,8 +2,8 @@ from sqlalchemy.orm import Session
 
 from backend.models import ConversationSession
 
-from backend.services.chat.conversation_service import (
-    conversation_service,
+from backend.services.conversation.message_service import (
+    conversation_message_service,
 )
 
 from backend.services.company_chat.exceptions import (
@@ -150,7 +150,7 @@ class CompanyConversationService:
                 f"Conversation {conversation_id} not found."
             )
 
-        return conversation_service.get_messages(
+        return conversation_message_service.get_messages(
             session_id=conversation_id,
         )
 

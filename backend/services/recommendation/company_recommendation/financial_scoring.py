@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from backend.services.recommendation.market.financial_feature_extractor import (
+from backend.services.recommendation.company_recommendation.financial_feature_extractor import (
     FinancialFeatures,
 )
 

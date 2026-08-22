@@ -7,7 +7,7 @@ from fastapi import (
 
 from sqlalchemy.orm import Session
 
-from backend.database.session import SessionLocal
+from backend.api.dependencies import get_db
 
 from backend.schemas.company_chat import (
     CompanyChatRequest,
@@ -31,15 +31,6 @@ from backend.services.company_chat.exceptions import (
 router = APIRouter(
     tags=["Company Chat"],
 )
-
-
-def get_db():
-    db = SessionLocal()
-
-    try:
-        yield db
-    finally:
-        db.close()
 
 @router.post(
     "/{symbol}/chat",

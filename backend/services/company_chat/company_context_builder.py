@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import Any
 
-from backend.services.company_chat.question_classifier import (
+from backend.services.company_chat.company_question_classifier import (
     CompanyQuestionType,
 )
 

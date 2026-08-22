@@ -8,35 +8,25 @@ from fastapi import (
 
 from sqlalchemy.orm import Session
 
-from backend.database.session import SessionLocal
+from backend.api.dependencies import get_db
 
 from backend.repositories.company_repository import (
     get_company_by_symbol,
 )
 
-from backend.repositories.market_recommendation_repository import (
-    list_market_recommendations,
+from backend.repositories.company_recommendation_repository import (
+    list_company_recommendations,
 )
-from backend.services.recommendation.market.market_recommendation_service import (
-    market_recommendation_service,
+from backend.services.recommendation.company_recommendation.company_recommendation_service import (
+    company_recommendation_service,
 )
-from backend.repositories.market_recommendation_repository import (
-    get_latest_market_recommendation,
+from backend.repositories.company_recommendation_repository import (
+    get_latest_company_recommendation,
 )
 
 router = APIRouter(
     tags=["Market Recommendation"],
 )
-
-
-def get_db():
-    db = SessionLocal()
-
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 # ============================================================
 # LATEST RECOMMENDATION
@@ -71,7 +61,7 @@ def get_company_recommendation(
             ),
         )
 
-    recommendation = get_latest_market_recommendation(
+    recommendation = get_latest_company_recommendation(
         db=db,
         company_id=company.id,
     )
@@ -138,7 +128,7 @@ def analyze_company_recommendation(
     try:
 
         result = (
-            market_recommendation_service.generate(
+            company_recommendation_service.generate(
                 db=db,
                 symbol=symbol,
                 sentiment_limit=sentiment_limit,
@@ -222,7 +212,7 @@ def get_recommendation_history(
             ),
         )
 
-    recommendations = list_market_recommendations(
+    recommendations = list_company_recommendations(
         db=db,
         company_id=company.id,
         skip=skip,

@@ -8,13 +8,13 @@ from backend.services.company_chat.company_resolver import (
     company_resolver,
 )
 
-from backend.services.company_chat.question_classifier import (
+from backend.services.company_chat.company_question_classifier import (
     CompanyQuestionClassifier,
     CompanyQuestionType,
     question_classifier,
 )
 
-from backend.services.company_chat.context_builder import (
+from backend.services.company_chat.company_context_builder import (
     CompanyChatContext,
     CompanyContextBuilder,
     company_context_builder,

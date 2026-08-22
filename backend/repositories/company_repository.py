@@ -55,26 +55,6 @@ def get_company_by_symbol(
     )
 
 
-def list_companies(
-    db: Session,
-    skip: int = 0,
-    limit: int = 100,
-) -> list[Company]:
-    """
-    Return all companies.
-    """
-
-    return (
-        db.query(Company)
-        .order_by(
-            Company.company_name.asc(),
-        )
-        .offset(skip)
-        .limit(limit)
-        .all()
-    )
-
-
 def update_company(
     db: Session,
     company: Company,

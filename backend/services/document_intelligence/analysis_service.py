@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 
 from backend.database.session import SessionLocal
 from backend.repositories.document_repository import get_document
-from backend.repositories.report_repository import (
+from backend.repositories.document_report_repository import (
     create_report,
     get_report,
     update_report,

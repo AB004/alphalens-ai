@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from backend.repositories.market_recommendation_repository import (
-    get_latest_market_recommendation,
+from backend.repositories.company_recommendation_repository import (
+    get_latest_company_recommendation,
 )
 
 
@@ -22,7 +22,7 @@ class RecommendationContextRetriever:
     ) -> dict | None:
 
         recommendation = (
-            get_latest_market_recommendation(
+            get_latest_company_recommendation(
                 db=db,
                 company_id=company_id,
             )

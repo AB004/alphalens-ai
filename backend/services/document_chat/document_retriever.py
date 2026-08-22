@@ -5,16 +5,28 @@ import numpy as np
 from fastapi import HTTPException, status
 
 from backend.database.session import SessionLocal
-from backend.repositories.chunk_repository import get_chunks_for_document
+from backend.repositories.document_chunk_repository import get_chunks_for_document
 from backend.repositories.document_repository import get_document
-from backend.repositories.index_repository import get_document_index
-from backend.services.rag.index_service import get_embedder
+from backend.repositories.document_index_repository import get_document_index
+from backend.services.rag.index_service import Embedder, get_embedder
 
 
-class Retriever:
+class DocumentRetriever:
 
-    def __init__(self):
-        self.embedder = get_embedder()
+    def __init__(self, embedder: Embedder | None = None) -> None:
+        """Create a retriever without loading the embedding model at startup.
+
+        An embedder can be supplied by tests or an alternative runtime adapter.
+        The production embedder remains lazy because it may download a model.
+        """
+
+        self._embedder = embedder
+
+    @property
+    def embedder(self) -> Embedder:
+        if self._embedder is None:
+            self._embedder = get_embedder()
+        return self._embedder
 
     def _search_document(
         self,
@@ -145,4 +157,4 @@ class Retriever:
             db.close()
 
 
-retriever = Retriever()
+document_retriever = DocumentRetriever()

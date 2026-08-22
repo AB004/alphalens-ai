@@ -24,19 +24,19 @@ def test_upload_single_pdf_persists_metadata():
 
 def test_upload_multiple_pdfs():
     with TestClient(app) as client:
-        response = client.post("/api/upload", files=[
+        response = client.post("/api/documents/upload", files=[
             ("files", ("first.pdf", SIMPLE_PDF, "application/pdf")),
             ("files", ("second.pdf", SIMPLE_PDF, "application/pdf")),
         ])
 
-    assert response.status_code == 200
+    assert response.status_code == 201
     assert [item["original_filename"] for item in response.json()["uploads"]] == ["first.pdf", "second.pdf"]
 
 
 def test_upload_rejects_invalid_type_and_content():
     with TestClient(app) as client:
-        wrong_extension = client.post("/api/upload", files=[("files", ("bad.txt", b"not a pdf", "text/plain"))])
-        invalid_pdf = client.post("/api/upload", files=[("files", ("bad.pdf", b"%PDF-not-really-a-pdf", "application/pdf"))])
+        wrong_extension = client.post("/api/documents/upload", files=[("files", ("bad.txt", b"not a pdf", "text/plain"))])
+        invalid_pdf = client.post("/api/documents/upload", files=[("files", ("bad.pdf", b"%PDF-not-really-a-pdf", "application/pdf"))])
 
     assert wrong_extension.status_code == 400
     assert invalid_pdf.status_code == 400
@@ -47,14 +47,14 @@ def test_upload_enforces_size_limit(monkeypatch):
 
     monkeypatch.setattr(upload_service, "MAX_FILE_SIZE", 20)
     with TestClient(app) as client:
-        response = client.post("/api/upload", files=[("files", ("large.pdf", b"%PDF-" + b"x" * 20, "application/pdf"))])
+        response = client.post("/api/documents/upload", files=[("files", ("large.pdf", b"%PDF-" + b"x" * 20, "application/pdf"))])
 
     assert response.status_code == 413
 
 
 def test_delete_document_removes_record_and_file():
     with TestClient(app) as client:
-        uploaded = client.post("/api/upload", files=[("files", ("delete.pdf", SIMPLE_PDF, "application/pdf"))]).json()["uploads"][0]
+        uploaded = client.post("/api/documents/upload", files=[("files", ("delete.pdf", SIMPLE_PDF, "application/pdf"))]).json()["uploads"][0]
         response = client.delete(f"/api/documents/{uploaded['id']}")
 
         assert response.status_code == 204

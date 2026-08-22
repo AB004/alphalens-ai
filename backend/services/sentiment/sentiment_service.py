@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from backend.models.news import News
 from backend.models.sentiment import Sentiment
 
-from backend.repositories.sentiment_repository import (
+from backend.repositories.news_sentiment_repository import (
     get_sentiment_by_news_id,
     upsert_sentiment,
 )
@@ -24,7 +24,7 @@ from backend.services.sentiment.provider import (
     SentimentProvider,
 )
 
-from backend.repositories.sentiment_repository import (
+from backend.repositories.news_sentiment_repository import (
     get_company_sentiments,
 )
 from backend.services.sentiment.aggregator import (
@@ -33,7 +33,7 @@ from backend.services.sentiment.aggregator import (
 from backend.repositories.company_repository import (
     get_company_by_symbol,
 )
-from backend.repositories.news_repository import (
+from backend.repositories.company_news_repository import (
     list_latest_news,
     filter_unanalyzed_news,
 )

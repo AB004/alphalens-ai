@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 
-from backend.repositories.news_repository import (
+from backend.repositories.company_news_repository import (
     list_latest_news,
 )
 

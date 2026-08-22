@@ -1,7 +1,11 @@
-from backend.services.llm.gemini_service import gemini_service
+"""Manual Gemini smoke test; excluded from pytest collection side effects."""
 
-print(
-    gemini_service.generate(
-        "Say hello."
-    )
-)
+
+def main() -> None:
+    from backend.services.llm.gemini_service import gemini_service
+
+    print(gemini_service.generate_text("Say hello."))
+
+
+if __name__ == "__main__":
+    main()

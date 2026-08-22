@@ -1,23 +1,23 @@
 from fastapi import HTTPException, status
 
 from backend.database.session import SessionLocal
-from backend.services.chat.retriever import retriever
-from backend.services.chat.context_builder import context_builder
-from backend.services.chat.prompt_builder import prompt_builder
+from backend.services.document_chat.document_retriever import document_retriever
+from backend.services.document_chat.document_context_builder import context_builder
+from backend.services.document_chat.document_prompt_builder import prompt_builder
 from backend.services.llm.gemini_service import gemini_service
 from backend.repositories.conversation_repository import (
     get_session,
 )
 
-from backend.services.chat.memory_service import (
+from backend.services.conversation.memory_service import (
     memory_service,
 )
 
-from backend.services.chat.conversation_service import (
-    conversation_service,
+from backend.services.conversation.message_service import (
+    conversation_message_service,
 )
 
-class ChatService:
+class DocumentChatService:
 
     def chat(
         self,
@@ -39,7 +39,7 @@ class ChatService:
             )
 
         # Step 1
-        chunks = retriever.retrieve(
+        chunks = document_retriever.retrieve(
             document_ids=document_ids,
             query=question,
             top_k=top_k,
@@ -50,6 +50,7 @@ class ChatService:
 
         # Step 3
         prompt = prompt_builder.build(
+            history="",
             context=context,
             question=question,
         )
@@ -130,7 +131,7 @@ class ChatService:
             # Retrieve document chunks
             # -------------------------------
 
-            chunks = retriever.retrieve(
+            chunks = document_retriever.retrieve(
                 document_ids=session.document_ids,
                 query=question,
                 top_k=session.settings.get("top_k", 10)
@@ -199,12 +200,12 @@ class ChatService:
             # Save conversation
             # -------------------------------
 
-            conversation_service.add_user_message(
+            conversation_message_service.add_user_message(
                 session_id=session_id,
                 message=question,
             )
 
-            conversation_service.add_assistant_message(
+            conversation_message_service.add_assistant_message(
                 session_id=session_id,
                 message=answer,
                 citations=citations,
@@ -218,4 +219,4 @@ class ChatService:
         finally:
             db.close()
 
-chat_service = ChatService()
+document_chat_service = DocumentChatService()

@@ -5,8 +5,8 @@ from backend.schemas.conversation import (
     ConversationResponse,
 )
 
-from backend.services.chat.conversation_service import (
-    conversation_service,
+from backend.services.document_chat.document_conversation_service import (
+    document_conversation_service,
 )
 
 router = APIRouter()
@@ -19,7 +19,7 @@ router = APIRouter()
 def create_conversation(
     request: CreateConversationRequest,
 ):
-    return conversation_service.create(
+    return document_conversation_service.create(
         title=request.title,
         document_ids=request.document_ids,
     )
@@ -30,7 +30,7 @@ def create_conversation(
     response_model=list[ConversationResponse],
 )
 def list_conversations():
-    return conversation_service.list()
+    return document_conversation_service.list()
 
 
 @router.get(
@@ -40,7 +40,7 @@ def list_conversations():
 def get_conversation(
     session_id: int,
 ):
-    return conversation_service.get(session_id)
+    return document_conversation_service.get(session_id)
 
 
 @router.delete(
@@ -49,4 +49,4 @@ def get_conversation(
 def delete_conversation(
     session_id: int,
 ):
-    return conversation_service.delete(session_id)
+    return document_conversation_service.delete(session_id)

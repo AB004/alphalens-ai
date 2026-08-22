@@ -12,7 +12,7 @@ from backend.repositories.company_repository import (
     list_companies,
 )
 
-from backend.repositories.financial_repository import (
+from backend.repositories.company_financial_repository import (
     delete_company_financials,
     upsert_financial_statement,
     get_latest_financials,
@@ -24,12 +24,18 @@ from backend.repositories.company_cache_repository import (
     refresh_cache,
 )
 
-from backend.services.company import provider
+from backend.services.company import get_default_provider
+from backend.services.company.provider import CompanyProvider
 
 
 class CompanyService:
 
     CACHE_DURATION = timedelta(hours=24)
+
+    def __init__(self, provider: CompanyProvider | None = None) -> None:
+        """Create the service with a replaceable external data provider."""
+
+        self.provider = provider
 
     def _save_financials(
         self,
@@ -172,7 +178,10 @@ class CompanyService:
         Fetch latest company data from external provider.
         """
 
-        return provider.get_company_data(
+        if self.provider is None:
+            self.provider = get_default_provider()
+
+        return self.provider.get_company_data(
             symbol,
         )
 

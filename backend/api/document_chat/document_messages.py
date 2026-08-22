@@ -5,11 +5,11 @@ from backend.schemas.conversation import (
     ConversationMessageResponse,
     MessageResponse,
 )
-from backend.services.chat.conversation_service import (
-    conversation_service,
+from backend.services.conversation.message_service import (
+    conversation_message_service,
 )
-from backend.services.chat.chat_service import (
-    chat_service,
+from backend.services.document_chat.document_chat_service import (
+    document_chat_service,
 )
 
 
@@ -24,7 +24,7 @@ def send_message(
     session_id: int,
     request: ConversationMessageRequest,
 ):
-    return chat_service.conversation_chat(
+    return document_chat_service.conversation_chat(
         session_id=session_id,
         question=request.question,
     )
@@ -36,6 +36,6 @@ def send_message(
 def get_messages(
     session_id: int,
 ):
-    return conversation_service.get_messages(
+    return conversation_message_service.get_messages(
         session_id=session_id,
     )
