@@ -13,9 +13,7 @@ from backend.services.sentiment.sentiment_service import (
 
 sentiment_provider = FinBERTProvider()
 
-sentiment_preprocessor = (
-    SentimentPreprocessor()
-)
+sentiment_preprocessor = SentimentPreprocessor()
 
 sentiment_service = SentimentService(
     provider=sentiment_provider,

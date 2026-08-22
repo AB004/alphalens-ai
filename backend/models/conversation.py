@@ -1,6 +1,13 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
-from sqlalchemy import JSON, Column, DateTime, Integer, String
+from sqlalchemy import (
+    JSON,
+    Column,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+)
 
 from backend.database.session import Base
 
@@ -12,7 +19,11 @@ def utc_now() -> datetime:
 class ConversationSession(Base):
     __tablename__ = "conversation_sessions"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+    )
 
     title = Column(
         String(255),
@@ -22,6 +33,16 @@ class ConversationSession(Base):
     document_ids = Column(
         JSON,
         nullable=False,
+    )
+
+    company_id = Column(
+        Integer,
+        ForeignKey(
+            "companies.id",
+            ondelete="CASCADE",
+        ),
+        nullable=True,
+        index=True,
     )
 
     settings = Column(

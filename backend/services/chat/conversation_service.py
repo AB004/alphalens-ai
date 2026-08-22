@@ -175,7 +175,7 @@ class ConversationService:
         self,
         session_id: int,
         message: str,
-        citations,
+        citations=None,
     ):
 
         db = SessionLocal()
@@ -187,7 +187,7 @@ class ConversationService:
                 session_id=session_id,
                 role="assistant",
                 message=message,
-                citations=citations,
+                citations=citations or [],
             )
 
         finally:

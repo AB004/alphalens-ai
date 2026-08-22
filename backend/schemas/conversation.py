@@ -39,14 +39,15 @@ class ConversationResponse(BaseModel):
 
     document_ids: list[int]
 
+    company_id: int | None = None
+
     created_at: datetime
 
     updated_at: datetime
 
     class Config:
         from_attributes = True
-
-
+        
 class MessageResponse(BaseModel):
 
     role: str

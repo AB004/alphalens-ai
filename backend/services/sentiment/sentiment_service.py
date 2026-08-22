@@ -38,6 +38,11 @@ from backend.repositories.news_repository import (
     filter_unanalyzed_news,
 )
 
+from backend.services.sentiment.finbert_provider import (
+    FinBERTProvider,
+)
+
+
 class SentimentService:
     """
     Business service responsible for article-level
@@ -608,3 +613,12 @@ class SentimentService:
             batch_size=batch_size,
             force=False,
         )
+
+sentiment_provider = FinBERTProvider()
+
+sentiment_preprocessor = SentimentPreprocessor()
+
+sentiment_service = SentimentService(
+    provider=sentiment_provider,
+    preprocessor=sentiment_preprocessor,
+)
