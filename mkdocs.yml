@@ -6,13 +6,8 @@ theme:
   name: material
 
 nav:
-  - Home: index.md
-  - Architecture: architecture.md
-  - Database: database.md
-  - Folder Structure: folder_structure.md
-  - Modules: modules.md
-  - API: api.md
-  - Roadmap: roadmap.md
+  - API: api_reference.md
+  - Roadmap: system_and_roadmap.md
 
 markdown_extensions:
   - admonition

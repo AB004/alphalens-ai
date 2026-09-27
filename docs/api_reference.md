@@ -4,6 +4,7 @@
 **Total Endpoints:** 54  
 **Authentication:** Optional Session / Bearer Token (where configured)  
 **Standard Response:** JSON `application/json` (errors return `{"detail": "..."}`)
+**Postman Import:** [`alphalens_ai_postman_collection.json`](file:///h:/Alphalens%20AI/docs/alphalens_ai_postman_collection.json)  
 
 ---
 

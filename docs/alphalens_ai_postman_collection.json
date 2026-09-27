@@ -1,0 +1,1391 @@
+{
+  "info": {
+    "name": "AlphaLens AI - Complete API Collection",
+    "_postman_id": "alphalens-ai-api-v1",
+    "description": "Exhaustive collection of all 54 production API endpoints for AlphaLens AI platform covering Document RAG, Equity Intelligence, Financial Sentiment, Home Dashboard, and Official NSE/BSE IPOs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "documentId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "sessionId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "symbol",
+      "value": "TCS",
+      "type": "string"
+    },
+    {
+      "key": "newsId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "conversationId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Document Management",
+      "item": [
+        {
+          "name": "Upload PDF Documents",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "description": "Select PDF financial filings or annual reports"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "upload"
+              ]
+            },
+            "description": "Upload one or more PDF financial documents (annual reports, earnings transcripts, DRHP)."
+          }
+        },
+        {
+          "name": "List All Documents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents"
+              ]
+            },
+            "description": "Retrieve list of all uploaded financial documents stored in the system."
+          }
+        },
+        {
+          "name": "Delete Document by ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}"
+              ]
+            },
+            "description": "Remove a document record, chunk index, and stored file from disk."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Document Processing",
+      "item": [
+        {
+          "name": "Process Document Chunks",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document_id\": 1,\n  \"chunk_size\": 500,\n  \"chunk_overlap\": 50\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/process",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "process"
+              ]
+            },
+            "description": "Extract text from uploaded PDF and generate semantic chunks with metadata."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Vector Indexing & Search",
+      "item": [
+        {
+          "name": "Build FAISS Vector Index",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"force_reindex\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/index",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}",
+                "index"
+              ]
+            },
+            "description": "Embed processed chunks using SentenceTransformers and build FAISS vector index."
+          }
+        },
+        {
+          "name": "Semantic Similarity Search",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"What is the net profit and EBITDA margin for Q1?\",\n  \"top_k\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/search",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}",
+                "search"
+              ]
+            },
+            "description": "Perform semantic vector retrieval against indexed document chunks."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Document Intelligence",
+      "item": [
+        {
+          "name": "Generate Document Analysis",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/analysis",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}",
+                "analysis"
+              ]
+            },
+            "description": "Generate executive summary, key financial ratios, growth drivers, and risk factors."
+          }
+        },
+        {
+          "name": "Get Saved Document Analysis",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/analysis",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}",
+                "analysis"
+              ]
+            },
+            "description": "Fetch previously generated document intelligence report from database."
+          }
+        },
+        {
+          "name": "Generate Investment Recommendation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/recommendation",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}",
+                "recommendation"
+              ]
+            },
+            "description": "Generate structured investment verdict (Bullish/Neutral/Bearish) with risk-reward rationale."
+          }
+        },
+        {
+          "name": "Get Saved Recommendation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/{{documentId}}/recommendation",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "{{documentId}}",
+                "recommendation"
+              ]
+            },
+            "description": "Fetch stored investment recommendation for a document."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Document Direct Chat",
+      "item": [
+        {
+          "name": "One-Shot Document Q&A",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"document_id\": 1,\n  \"question\": \"What deal wins were announced in North America?\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/chat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "chat"
+              ]
+            },
+            "description": "Stateless RAG question-answering over an indexed document."
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Chat Sessions & Messages",
+      "item": [
+        {
+          "name": "Create Chat Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Reliance Q1 FY25 Financial Review\",\n  \"document_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/sessions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "sessions"
+              ]
+            },
+            "description": "Create a persistent conversation session tied to a document."
+          }
+        },
+        {
+          "name": "List All Chat Sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/sessions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "sessions"
+              ]
+            },
+            "description": "Returns all conversation sessions."
+          }
+        },
+        {
+          "name": "Get Specific Chat Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/sessions/{{sessionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "sessions",
+                "{{sessionId}}"
+              ]
+            },
+            "description": "Get details of a specific conversation session."
+          }
+        },
+        {
+          "name": "Delete Chat Session",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/sessions/{{sessionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "sessions",
+                "{{sessionId}}"
+              ]
+            },
+            "description": "Delete session and all associated message history."
+          }
+        },
+        {
+          "name": "Send Message in Session (RAG Chat)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"How does management plan to reduce net debt?\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/chat/sessions/{{sessionId}}/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "sessions",
+                "{{sessionId}}",
+                "messages"
+              ]
+            },
+            "description": "Send user message, retrieve context from document, query LLM, and record turn."
+          }
+        },
+        {
+          "name": "Get Session Messages History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/chat/sessions/{{sessionId}}/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "chat",
+                "sessions",
+                "{{sessionId}}",
+                "messages"
+              ]
+            },
+            "description": "Get all past messages in chronological order."
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Company Intelligence",
+      "item": [
+        {
+          "name": "List Tracked Companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company?skip=0&limit=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company"
+              ],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            },
+            "description": "List all tracked companies with pagination."
+          }
+        },
+        {
+          "name": "Search Companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/search?q=Tata&limit=10",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "Tata"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Search company by ticker symbol or name."
+          }
+        },
+        {
+          "name": "Get Company Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}"
+              ]
+            },
+            "description": "Get company fundamentals (sector, market cap, P/E, 52w range)."
+          }
+        },
+        {
+          "name": "Get Detailed Financials",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/financials",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "financials"
+              ]
+            },
+            "description": "Get company financial statements, margins, and ratios."
+          }
+        },
+        {
+          "name": "Refresh Company Fundamentals",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "refresh"
+              ]
+            },
+            "description": "Force live re-fetch from market provider for company metadata."
+          }
+        },
+        {
+          "name": "Get Company Sentiment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/sentiment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "sentiment"
+              ]
+            },
+            "description": "Get aggregated sentiment score and sentiment label for company."
+          }
+        },
+        {
+          "name": "Analyze Company Sentiment",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/sentiment/analyze?limit=100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "sentiment",
+                "analyze"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Trigger fresh FinBERT sentiment analysis across tracked news."
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Company News",
+      "item": [
+        {
+          "name": "Get Company News Articles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/news?limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "news"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Get latest news items for company with sentiment tags."
+          }
+        },
+        {
+          "name": "Get Company News Count",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/news/count",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "news",
+                "count"
+              ]
+            },
+            "description": "Get total count of tracked news articles."
+          }
+        },
+        {
+          "name": "Refresh Company News",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/news/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "news",
+                "refresh"
+              ]
+            },
+            "description": "Fetch fresh news articles from provider."
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Market Recommendations",
+      "item": [
+        {
+          "name": "Get Current Recommendation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/recommendation",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "recommendation"
+              ]
+            },
+            "description": "Get latest AI market recommendation for company."
+          }
+        },
+        {
+          "name": "Analyze & Generate Recommendation",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/recommendation/analyze?sentiment_limit=100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "recommendation",
+                "analyze"
+              ],
+              "query": [
+                {
+                  "key": "sentiment_limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Re-evaluate recommendation combining technicals, sentiment, and earnings."
+          }
+        },
+        {
+          "name": "Get Recommendation History",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/recommendations?skip=0&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "recommendations"
+              ],
+              "query": [
+                {
+                  "key": "skip",
+                  "value": "0"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Historical audit log of recommendation changes over time."
+          }
+        }
+      ]
+    },
+    {
+      "name": "10. Company Conversational Chat",
+      "item": [
+        {
+          "name": "Ask Question About Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"message\": \"What is the valuation view on this company given recent deal wins?\",\n  \"conversation_id\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/chat",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "chat"
+              ]
+            },
+            "description": "Chat with AI assistant about a specific company."
+          }
+        },
+        {
+          "name": "List Company Chat Sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/chats",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "chats"
+              ]
+            },
+            "description": "List conversation sessions for this company."
+          }
+        },
+        {
+          "name": "Get Company Conversation Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/chat/{{conversationId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "chat",
+                "{{conversationId}}"
+              ]
+            },
+            "description": "Get details of a company conversation session."
+          }
+        },
+        {
+          "name": "Get Company Chat Messages",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/company/{{symbol}}/chat/{{conversationId}}/messages",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "company",
+                "{{symbol}}",
+                "chat",
+                "{{conversationId}}",
+                "messages"
+              ]
+            },
+            "description": "Get message history for company chat."
+          }
+        }
+      ]
+    },
+    {
+      "name": "11. FinBERT Sentiment Engine",
+      "item": [
+        {
+          "name": "Get News Sentiment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sentiment/news/{{newsId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sentiment",
+                "news",
+                "{{newsId}}"
+              ]
+            },
+            "description": "Get sentiment score of a stored news article."
+          }
+        },
+        {
+          "name": "Trigger News Sentiment Analysis",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sentiment/news/{{newsId}}?force=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sentiment",
+                "news",
+                "{{newsId}}"
+              ],
+              "query": [
+                {
+                  "key": "force",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Evaluate sentiment classification using FinBERT."
+          }
+        },
+        {
+          "name": "Get Company Sentiment Pulse",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/sentiment/company/{{symbol}}?limit=100",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "sentiment",
+                "company",
+                "{{symbol}}"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            },
+            "description": "Company-wide sentiment distribution & pulse."
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. Home & Market Overview",
+      "item": [
+        {
+          "name": "Consolidated Master Home Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home?force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home"
+              ],
+              "query": [
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Complete master dashboard payload in 1 roundtrip (overview, breadth, movers, sectors, earnings, watchlists, 52w extremes, volume shockers, sentiment)."
+          }
+        },
+        {
+          "name": "Market Overview & Major Indices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/overview?force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "overview"
+              ],
+              "query": [
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Live values for Nifty 50, Sensex, Bank Nifty, Nifty IT, S&P 500, trading status, and market regime."
+          }
+        },
+        {
+          "name": "Advance / Decline Ratio (Breadth)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/advance-decline?force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "advance-decline"
+              ],
+              "query": [
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Advances, declines, unchanged counts, Advance/Decline Ratio (ADR), and breadth sentiment."
+          }
+        },
+        {
+          "name": "Top Gainers, Losers & Most Active",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/movers?cap=all&limit=10&force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "movers"
+              ],
+              "query": [
+                {
+                  "key": "cap",
+                  "value": "all",
+                  "description": "'large', 'mid', 'small', or 'all'"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Top gainers, losers, and most active stocks across market caps."
+          }
+        },
+        {
+          "name": "Sector Performance Heatmap",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/sectors?force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "sectors"
+              ],
+              "query": [
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Sector returns, advances vs declines, top gainer/loser, and momentum status."
+          }
+        },
+        {
+          "name": "Specific Sector Top Movers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/sectors/Technology/movers?force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "sectors",
+                "Technology",
+                "movers"
+              ],
+              "query": [
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Constituents, top gainers, and top losers for a selected sector (e.g. Technology, Automobile, Financial Services)."
+          }
+        },
+        {
+          "name": "Quarterly Results (Earnings)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/quarterly-results?status=all&limit=20&force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "quarterly-results"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "all",
+                  "description": "'upcoming', 'recent', or 'all'"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Earnings announcements with revenue, profit growth, verdict (Beat/Met/Miss), and stock price impact."
+          }
+        },
+        {
+          "name": "Get Watchlist Stocks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/watchlist?user_id=default&force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "watchlist"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "default"
+                },
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Returns watchlist stocks enriched with real-time price quotes."
+          }
+        },
+        {
+          "name": "Add Stock to Watchlist",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"INFY\",\n  \"user_id\": \"default\",\n  \"category\": \"bluechip\",\n  \"notes\": \"Top Indian IT leader\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/home/watchlist",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "watchlist"
+              ]
+            },
+            "description": "Add a ticker symbol to a user's watchlist."
+          }
+        },
+        {
+          "name": "Remove Stock from Watchlist",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/watchlist/INFY?user_id=default",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "watchlist",
+                "INFY"
+              ],
+              "query": [
+                {
+                  "key": "user_id",
+                  "value": "default"
+                }
+              ]
+            },
+            "description": "Removes a stock ticker from user's watchlist."
+          }
+        },
+        {
+          "name": "52-Week High & Low Breakouts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/52-week-high-low?threshold_percent=3.5&limit=10&force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "52-week-high-low"
+              ],
+              "query": [
+                {
+                  "key": "threshold_percent",
+                  "value": "3.5"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Returns stocks trading near or at their 52-week high and 52-week low levels."
+          }
+        },
+        {
+          "name": "Volume Shockers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/volume-shockers?min_ratio=1.5&limit=10&force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "volume-shockers"
+              ],
+              "query": [
+                {
+                  "key": "min_ratio",
+                  "value": "1.5"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                },
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Returns stocks experiencing unusually large trading volume surges vs 10-day average."
+          }
+        },
+        {
+          "name": "Market Sentiment Pulse",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/sentiment",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "sentiment"
+              ]
+            },
+            "description": "Returns market-wide aggregated sentiment breakdown (Bullish/Neutral/Bearish) and composite sentiment score."
+          }
+        },
+        {
+          "name": "Trigger Live Market Refresh",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "refresh"
+              ]
+            },
+            "description": "Triggers live fetch from external market provider for all tracked indices and stocks."
+          }
+        }
+      ]
+    },
+    {
+      "name": "13. IPO Intelligence",
+      "item": [
+        {
+          "name": "Get Upcoming IPOs (Official NSE)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/ipo/upcoming?force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "ipo",
+                "upcoming"
+              ],
+              "query": [
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Returns upcoming and active IPOs fetched directly from official NSE endpoints."
+          }
+        },
+        {
+          "name": "Get Recent IPOs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/ipo/recent?days=30&force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "ipo",
+                "recent"
+              ],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30"
+                },
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Returns IPOs listed in the last N days with listing prices."
+          }
+        },
+        {
+          "name": "Get IPO Performance",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/home/ipo/BAJAJHFL/performance?limit=30&force_refresh=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "home",
+                "ipo",
+                "BAJAJHFL",
+                "performance"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "30"
+                },
+                {
+                  "key": "force_refresh",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "Returns daily post-listing performance for a specific IPO symbol."
+          }
+        }
+      ]
+    }
+  ]
+}
