@@ -1,231 +1,533 @@
-# AlphaLens AI — API Reference Manual
+# AlphaLens AI — Complete API Reference Manual
 
-Base URL: `http://localhost:8000/api`
+**Base URL:** `http://localhost:8000/api`  
+**Total Endpoints:** 54  
+**Authentication:** Optional Session / Bearer Token (where configured)  
+**Standard Response:** JSON `application/json` (errors return `{"detail": "..."}`)
 
 ---
 
-## 1. Document Management & Intelligence (Modules 1 – 6)
+## Table of Contents
+1. [Document Ingestion & Management](#1-document-ingestion--management) (3 APIs)
+2. [Document Processing & Chunking](#2-document-processing--chunking) (1 API)
+3. [Document Vector Indexing & Search](#3-document-vector-indexing--search) (2 APIs)
+4. [Document Intelligence & Recommendations](#4-document-intelligence--recommendations) (4 APIs)
+5. [Document Direct Chat](#5-document-direct-chat) (1 API)
+6. [Document Chat Sessions & Messaging](#6-document-chat-sessions--messaging) (6 APIs)
+7. [Company Intelligence & Fundamentals](#7-company-intelligence--fundamentals) (7 APIs)
+8. [Company News & Counts](#8-company-news--counts) (3 APIs)
+9. [Market Recommendations for Equities](#9-market-recommendations-for-equities) (3 APIs)
+10. [Company Conversational Chat](#10-company-conversational-chat) (4 APIs)
+11. [FinBERT Sentiment Analysis Engine](#11-finbert-sentiment-analysis-engine) (3 APIs)
+12. [Home Page & Market Overview](#12-home-page--market-overview) (14 APIs)
+13. [IPO Intelligence (Official Exchange)](#13-ipo-intelligence-official-exchange) (3 APIs)
 
-### 1.1 Upload Document
-- **Endpoint:** `POST /documents/upload`
-- **Description:** Upload PDF financial filing, annual report, or prospectus.
-- **Request:** `multipart/form-data` with `file: UploadFile`
-- **Response:**
+---
+
+## 1. Document Ingestion & Management
+
+### 1.1 Upload PDF Documents
+- **`POST /documents/upload`**
+- **Description:** Upload one or more PDF financial documents (annual reports, earnings transcripts, DRHP).
+- **Request:** `multipart/form-data` with `files: List[UploadFile]`
+- **Response:** `UploadResponse`
 ```json
 {
-  "document_id": "doc_12345",
-  "filename": "reliance_annual_report_2025.pdf",
-  "file_size": 4512030,
-  "status": "uploaded",
-  "upload_timestamp": "2026-09-27T10:00:00Z"
-}
-```
-
-### 1.2 Process Document (Text Extraction & Chunking)
-- **Endpoint:** `POST /documents/process`
-- **Request:**
-```json
-{ "document_id": "doc_12345", "chunk_size": 500, "chunk_overlap": 50 }
-```
-- **Response:**
-```json
-{
-  "document_id": "doc_12345",
-  "total_pages": 48,
-  "total_chunks": 182,
-  "status": "processed"
-}
-```
-
-### 1.3 Index Document (Vector Embedding & FAISS)
-- **Endpoint:** `POST /documents/index`
-- **Request:**
-```json
-{ "document_id": "doc_12345" }
-```
-- **Response:**
-```json
-{
-  "document_id": "doc_12345",
-  "indexed_chunks": 182,
-  "vector_dimensions": 384,
-  "index_status": "ready"
-}
-```
-
-### 1.4 Semantic Document Search
-- **Endpoint:** `GET /documents/search`
-- **Query Params:** `query` (str), `top_k` (int, default 5), `document_id` (optional str)
-- **Response:**
-```json
-{
-  "query": "EBITDA margin FY25",
-  "results": [
+  "message": "Files uploaded successfully",
+  "documents": [
     {
-      "chunk_id": "chk_01",
-      "document_id": "doc_12345",
-      "page_number": 12,
-      "text": "Consolidated EBITDA for FY25 stood at Rs 1,78,000 Cr...",
-      "score": 0.892
+      "id": 1,
+      "filename": "reliance_q1_fy25.pdf",
+      "file_path": "uploads/reliance_q1_fy25.pdf",
+      "file_size": 2450890,
+      "uploaded_at": "2026-09-27T10:00:00Z"
     }
   ]
 }
 ```
 
-### 1.5 Document Intelligence (Key Financial Metrics & Summary)
-- **Endpoint:** `GET /documents/{document_id}/intelligence`
-- **Response:**
+### 1.2 List Uploaded Documents
+- **`GET /documents`**
+- **Description:** Retrieve list of all uploaded financial documents stored in the system.
+- **Request:** None
+- **Response:** `DocumentListResponse`
 ```json
 {
-  "document_id": "doc_12345",
-  "executive_summary": "Strong revenue growth led by digital and retail segments...",
-  "financial_highlights": { "revenue": 1000000.0, "net_profit": 79000.0, "ebitda_margin": "18.2%" },
-  "risk_factors": ["Refining margin volatility", "Foreign exchange fluctuations"]
+  "documents": [
+    {
+      "id": 1,
+      "filename": "reliance_q1_fy25.pdf",
+      "file_size": 2450890,
+      "uploaded_at": "2026-09-27T10:00:00Z"
+    }
+  ]
 }
 ```
 
-### 1.6 Document Recommendations
-- **Endpoint:** `GET /documents/{document_id}/recommendations`
-- **Response:**
+### 1.3 Delete Document
+- **`DELETE /documents/{document_id}`**
+- **Description:** Remove a document record, chunk index, and stored file from disk.
+- **Path Params:** `document_id: int`
+- **Response:** `204 No Content`
+
+---
+
+## 2. Document Processing & Chunking
+
+### 2.1 Process Document Chunks
+- **`POST /documents/process`**
+- **Description:** Extracts raw text from uploaded PDF, generates semantic chunks with metadata (page numbers, section headers).
+- **Request Body:**
 ```json
 {
-  "document_id": "doc_12345",
-  "verdict": "Neutral to Bullish",
-  "growth_catalysts": ["5G expansion", "Retail footprint expansion"],
-  "headwinds": ["High capex intensity"]
+  "document_id": 1,
+  "chunk_size": 500,
+  "chunk_overlap": 50
+}
+```
+- **Response:** `ProcessResponse`
+```json
+{
+  "document_id": 1,
+  "total_pages": 32,
+  "chunks_created": 128,
+  "status": "completed"
 }
 ```
 
 ---
 
-## 2. Document & Conversation Chat (Modules 7 – 8)
+## 3. Document Vector Indexing & Search
 
-### 2.1 Create Conversation
-- **Endpoint:** `POST /chat/conversations`
-- **Request:** `{ "title": "Reliance Q1 Analysis", "document_id": "doc_12345" }`
-- **Response:** `{ "conversation_id": "conv_99", "title": "Reliance Q1 Analysis", "created_at": "..." }`
-
-### 2.2 List Conversations
-- **Endpoint:** `GET /chat/conversations`
-- **Response:** `[ { "conversation_id": "conv_99", "title": "Reliance Q1 Analysis", "message_count": 4 } ]`
-
-### 2.3 Send Message (RAG-Powered Chat)
-- **Endpoint:** `POST /chat/messages`
-- **Request:**
+### 3.1 Build Document FAISS Vector Index
+- **`POST /documents/{document_id}/index`**
+- **Description:** Embeds processed chunks using SentenceTransformers and builds FAISS vector index.
+- **Path Params:** `document_id: int`
+- **Request Body:** `{ "force_reindex": false }`
+- **Response:** `IndexResponse`
 ```json
 {
-  "conversation_id": "conv_99",
-  "message": "What is the management commentary on debt reduction?",
-  "document_id": "doc_12345"
+  "document_id": 1,
+  "total_indexed": 128,
+  "vector_dimensions": 384,
+  "status": "indexed"
 }
 ```
-- **Response:**
+
+### 3.2 Semantic Similarity Search
+- **`POST /documents/{document_id}/search`**
+- **Description:** Perform semantic vector retrieval against indexed document chunks.
+- **Path Params:** `document_id: int`
+- **Request Body:**
 ```json
 {
-  "message_id": "msg_101",
-  "reply": "Management reiterated commitment to maintaining a net debt-zero balance sheet...",
-  "cited_sources": [ { "page": 14, "snippet": "Net debt remained negligible..." } ]
+  "query": "What is the net profit and EBITDA margin for Q1?",
+  "top_k": 5
+}
+```
+- **Response:** `SearchResponse`
+```json
+{
+  "query": "What is the net profit and EBITDA margin for Q1?",
+  "results": [
+    {
+      "chunk_id": 14,
+      "page_number": 6,
+      "score": 0.884,
+      "text": "EBITDA margin stood at 18.2% with net profit of Rs 15,138 Cr..."
+    }
+  ]
 }
 ```
 
 ---
 
-## 3. Company & Equity Intelligence (Modules 9 – 10)
+## 4. Document Intelligence & Recommendations
 
-### 3.1 Get Company Profile & Financials
-- **Endpoint:** `GET /company/{symbol_or_id}`
+### 4.1 Generate Document Intelligence Analysis
+- **`POST /documents/{document_id}/analysis`**
+- **Description:** Uses LLM (Gemini / Claude) to synthesize an executive summary, financial ratios, growth drivers, and risk factors from document chunks.
+- **Path Params:** `document_id: int`
+- **Response:** `ReportResponse`
+```json
+{
+  "document_id": 1,
+  "executive_summary": "Strong revenue acceleration in retail and telecom offsets O2C margin pressure...",
+  "financial_highlights": { "revenue": 236217.0, "net_profit": 15138.0 },
+  "risks": ["Crude oil refining volatility", "High 5G capex"],
+  "created_at": "2026-09-27T10:15:00Z"
+}
+```
+
+### 4.2 Retrieve Saved Document Intelligence Analysis
+- **`GET /documents/{document_id}/analysis`**
+- **Description:** Fetches previously generated document intelligence report from database.
+- **Path Params:** `document_id: int`
+- **Response:** `ReportResponse`
+
+### 4.3 Generate Investment Recommendation
+- **`POST /documents/{document_id}/recommendation`**
+- **Description:** Generates structured investment verdict (Bullish / Neutral / Bearish) with risk-reward rationale.
+- **Path Params:** `document_id: int`
+- **Response:** `RecommendationResponse`
+```json
+{
+  "document_id": 1,
+  "verdict": "Bullish",
+  "target_horizon": "12-18 months",
+  "rationale": "High operating leverage, strong retail margins, subscriber monetization.",
+  "confidence_score": 0.85
+}
+```
+
+### 4.4 Retrieve Saved Recommendation
+- **`GET /documents/{document_id}/recommendation`**
+- **Description:** Fetches stored investment recommendation for a document.
+- **Path Params:** `document_id: int`
+- **Response:** `RecommendationResponse`
+
+---
+
+## 5. Document Direct Chat
+
+### 5.1 One-Shot Document Q&A
+- **`POST /documents/chat`**
+- **Description:** Stateless RAG question-answering over an indexed document.
+- **Request Body:**
+```json
+{
+  "document_id": 1,
+  "question": "What deal wins were announced in North America?"
+}
+```
+- **Response:** `ChatResponse`
+```json
+{
+  "answer": "Management highlighted $8.3B TCV deal wins with large financial institutions...",
+  "citations": [ { "page": 12, "chunk_id": 45 } ]
+}
+```
+
+---
+
+## 6. Document Chat Sessions & Messaging
+
+### 6.1 Create Chat Session
+- **`POST /chat/sessions`**
+- **Description:** Create a persistent conversation session tied to a document.
+- **Request Body:** `{ "title": "Reliance Q1 Review", "document_id": 1 }`
+- **Response:** `ConversationResponse` (`id`, `title`, `document_id`, `created_at`)
+
+### 6.2 List All Chat Sessions
+- **`GET /chat/sessions`**
+- **Description:** Returns all conversation sessions.
+- **Response:** `list[ConversationResponse]`
+
+### 6.3 Get Specific Chat Session
+- **`GET /chat/sessions/{session_id}`**
+- **Path Params:** `session_id: int`
+- **Response:** `ConversationResponse`
+
+### 6.4 Delete Chat Session
+- **`DELETE /chat/sessions/{session_id}`**
+- **Description:** Delete session and all associated messages.
+- **Path Params:** `session_id: int`
+- **Response:** `{"message": "Session deleted"}`
+
+### 6.5 Send Message in Session (Multi-Turn RAG)
+- **`POST /chat/sessions/{session_id}/messages`**
+- **Description:** Sends user message, retrieves context, queries LLM, records turn in history.
+- **Path Params:** `session_id: int`
+- **Request Body:** `{ "content": "How does this compare to Q4?" }`
+- **Response:** `ConversationMessageResponse`
+```json
+{
+  "message_id": 42,
+  "session_id": 3,
+  "role": "assistant",
+  "content": "Sequentially, revenue increased by 3.2% compared to Q4 FY24...",
+  "sources": [ { "page": 8, "text": "QoQ growth stood at 3.2%..." } ],
+  "timestamp": "2026-09-27T10:20:00Z"
+}
+```
+
+### 6.6 Get Message History of Session
+- **`GET /chat/sessions/{session_id}/messages`**
+- **Description:** Get all past messages in chronological order.
+- **Path Params:** `session_id: int`
+- **Response:** `list[MessageResponse]`
+
+---
+
+## 7. Company Intelligence & Fundamentals
+
+### 7.1 Search Companies
+- **`GET /company/search`**
+- **Query Params:** `q: str`, `limit: int = 10`
+- **Response:** List of matching company profiles (`symbol`, `company_name`, `sector`).
+
+### 7.2 Get Company Fundamental Profile
+- **`GET /company/{symbol}`**
+- **Path Params:** `symbol: str` (e.g., `TCS`, `RELIANCE`)
 - **Response:**
 ```json
 {
   "symbol": "TCS",
   "company_name": "Tata Consultancy Services Ltd",
   "sector": "Technology",
+  "market_cap": 1560000.0,
   "pe_ratio": 32.1,
-  "market_cap": 1560000.0
+  "high_52w": 4592.25,
+  "low_52w": 3313.00
 }
 ```
 
-### 3.2 Get Company News
-- **Endpoint:** `GET /company/{symbol_or_id}/news`
-- **Response:**
+### 7.3 Get Detailed Financials
+- **`GET /company/{symbol}/financials`**
+- **Description:** Returns annual/quarterly financial statements, margins, and ratios.
+- **Path Params:** `symbol: str`
+- **Response:** Detailed financial dictionary (Revenue, EBITDA, Net Margin, EPS, ROE).
+
+### 7.4 On-Demand Refresh Company Data
+- **`POST /company/{symbol}/refresh`**
+- **Description:** Triggers live re-fetch from market provider for company metadata.
+- **Path Params:** `symbol: str`
+- **Response:** `{"message": "Company data refreshed", "symbol": "TCS"}`
+
+### 7.5 List Tracked Companies
+- **`GET /company`**
+- **Query Params:** `skip: int = 0`, `limit: int = 50`
+- **Response:** Paginated list of tracked company records.
+
+### 7.6 Get Aggregated Company Sentiment
+- **`GET /company/{symbol}/sentiment`**
+- **Path Params:** `symbol: str`
+- **Response:** `{ "symbol": "TCS", "sentiment_score": 0.65, "label": "Bullish", "articles_analyzed": 48 }`
+
+### 7.7 Trigger Company Sentiment Analysis
+- **`POST /company/{symbol}/sentiment/analyze`**
+- **Path Params:** `symbol: str`, `limit: int = 100`
+- **Response:** Freshly calculated sentiment breakdown across news items.
+
+---
+
+## 8. Company News & Counts
+
+### 8.1 Get Company News Articles
+- **`GET /company/{symbol}/news`**
+- **Path Params:** `symbol: str`
+- **Query Params:** `limit: int = 20`
+- **Response:** List of news items (`id`, `title`, `url`, `source`, `published_at`, `sentiment_label`).
+
+### 8.2 Get Company News Count
+- **`GET /company/{symbol}/news/count`**
+- **Path Params:** `symbol: str`
+- **Response:** `{ "symbol": "TCS", "total_news_articles": 134 }`
+
+### 8.3 Refresh Company News
+- **`POST /company/{symbol}/news/refresh`**
+- **Path Params:** `symbol: str`
+- **Response:** `NewsRefreshResponse` (`new_articles_count`, `symbol`)
+
+---
+
+## 9. Market Recommendations for Equities
+
+### 9.1 Get Current Market Recommendation
+- **`GET /company/{symbol}/recommendation`**
+- **Path Params:** `symbol: str`
+- **Response:** Current recommendation, confidence level, and key catalyst factors.
+
+### 9.2 Analyze and Generate New Recommendation
+- **`POST /company/{symbol}/recommendation/analyze`**
+- **Path Params:** `symbol: str`
+- **Query Params:** `sentiment_limit: int = 100`
+- **Response:** Newly evaluated recommendation combining technicals, sentiment, and earnings.
+
+### 9.3 Get Recommendation History
+- **`GET /company/{symbol}/recommendations`**
+- **Path Params:** `symbol: str`
+- **Query Params:** `skip: int = 0`, `limit: int = 20`
+- **Response:** Historical audit log of recommendation changes over time.
+
+---
+
+## 10. Company Conversational Chat
+
+### 10.1 Ask Question About Company
+- **`POST /company/{symbol}/chat`**
+- **Path Params:** `symbol: str`
+- **Request Body:**
 ```json
-[
-  { "title": "TCS bags $1B mega deal in North America", "source": "Reuters", "published_at": "2026-09-26T08:00:00Z" }
-]
+{
+  "message": "What is the valuation view on TCS given the recent deal wins?",
+  "conversation_id": null
+}
+```
+- **Response:** `CompanyChatResponse`
+```json
+{
+  "conversation_id": 5,
+  "reply": "TCS is currently trading at a P/E of 32.1x, in line with its 5-year average...",
+  "symbol": "TCS"
+}
 ```
 
-### 3.3 Financial Sentiment Analysis
-- **Endpoint:** `POST /sentiment/analyze`
-- **Request:** `{ "text": "Operating profit jumped 24% exceeding street estimates." }`
-- **Response:** `{ "sentiment": "Bullish", "score": 0.94, "confidence": 0.98 }`
+### 10.2 Get Company Conversation Details
+- **`GET /company/{symbol}/chat/{conversation_id}`**
+- **Path Params:** `symbol: str`, `conversation_id: int`
+- **Response:** `CompanyConversationResponse`
+
+### 10.3 List All Chats for a Company
+- **`GET /company/{symbol}/chats`**
+- **Path Params:** `symbol: str`
+- **Response:** List of company conversation summaries.
+
+### 10.4 Get Messages in Company Chat
+- **`GET /company/{symbol}/chat/{conversation_id}/messages`**
+- **Path Params:** `symbol: str`, `conversation_id: int`
+- **Response:** List of user and assistant messages for this company conversation.
 
 ---
 
-## 4. Home Page & Market Intelligence (Module 11.5)
+## 11. FinBERT Sentiment Analysis Engine
 
-*Available via both `/home` and `/market` prefixes.*
+### 11.1 Get Sentiment for a News Article
+- **`GET /sentiment/news/{news_id}`**
+- **Path Params:** `news_id: int`
+- **Response:** `{ "news_id": 12, "sentiment": "positive", "score": 0.94 }`
 
-### 4.1 Consolidated Master Home Dashboard
-- **Endpoint:** `GET /home`
-- **Description:** Returns the entire Home Page payload in a single roundtrip.
-- **Query Params:** `force_refresh` (bool, default `false`)
-- **Response:** Single consolidated JSON containing market overview, advance/decline breadth, movers, sectors, earnings, watchlists, 52-week breakouts, volume shockers, and sentiment pulse.
+### 11.2 Trigger Sentiment Scoring on News Article
+- **`POST /sentiment/news/{news_id}`**
+- **Path Params:** `news_id: int`
+- **Query Params:** `force: bool = false`
+- **Response:** FinBERT evaluated sentiment classification (`positive`, `neutral`, `negative`).
 
-### 4.2 Market Overview & Major Indices
-- **Endpoint:** `GET /home/overview`
-- **Response:** Indices (Nifty 50, Sensex, Bank Nifty, Nifty IT, S&P 500), trading status (`OPEN`/`CLOSED`/`PRE_MARKET`), and regime (`Bullish`, `Bearish`, `Neutral`).
-
-### 4.3 Advance / Decline Ratio (Market Breadth)
-- **Endpoint:** `GET /home/advance-decline`
-- **Response:** Total tracked stocks, advances count, declines count, unchanged count, ADR ratio, and breadth sentiment.
-
-### 4.4 Top Gainers, Losers & Most Active
-- **Endpoint:** `GET /home/movers`
-- **Query Params:** `cap` (`large`, `mid`, `small`, `all`), `limit` (int, default 10)
-- **Response:** Partitioned or segmented lists with stock quotes, change %, volume surge ratio.
-
-### 4.5 Sector Performance Heatmap & Movers
-- **Endpoint:** `GET /home/sectors` — Sector list with average returns, advances vs declines, top gainer/loser, momentum (`Leading`, `Improving`, `Lagging`, `Weakening`).
-- **Endpoint:** `GET /home/sectors/{sector_name}/movers` — Constituents and movers for a given sector.
-
-### 4.6 Quarterly Results (Earnings Announcements)
-- **Endpoint:** `GET /home/quarterly-results`
-- **Query Params:** `status` (`upcoming`, `recent`, `all`), `limit` (int, default 20)
-- **Response:** Revenue, net profit, YoY growth, verdict (`Beat`, `Met`, `Miss`), and stock price impact.
-
-### 4.7 Watchlist
-- **Endpoint:** `GET /home/watchlist` — Get user watchlist with live quotes (defaults to bluechip universe).
-- **Endpoint:** `POST /home/watchlist` — Add stock: `{ "symbol": "INFY", "category": "tech" }`
-- **Endpoint:** `DELETE /home/watchlist/{symbol}` — Remove stock.
-
-### 4.8 52-Week High / Low Breakouts
-- **Endpoint:** `GET /home/52-week-high-low`
-- **Query Params:** `threshold_percent` (float, default 3.5), `limit` (int, default 10)
-- **Response:** Stocks trading within X% of 52-week highs and lows.
-
-### 4.9 Volume Shockers
-- **Endpoint:** `GET /home/volume-shockers`
-- **Query Params:** `min_ratio` (float, default 1.5), `limit` (int, default 10)
-- **Response:** Stocks with current volume significantly exceeding 10-day average.
-
-### 4.10 Market Sentiment Pulse
-- **Endpoint:** `GET /home/sentiment`
-- **Response:** Market sentiment score (-1.0 to 1.0), bullish/neutral/bearish distribution percentages.
-
-### 4.11 On-Demand Live Market Refresh
-- **Endpoint:** `POST /home/refresh`
-- **Response:** `{ "status": "success", "indices_updated": 5, "quotes_updated": 32 }`
-
----
-
-## 5. IPO Intelligence (Official Exchange Data)
-
-*Strictly sourced from NSE / BSE official exchange APIs with resilient fallback.*
-
-### 5.1 Get Upcoming IPOs
-- **Endpoint:** `GET /home/ipo/upcoming`
-- **Query Params:** `force_refresh` (bool, default `false`)
+### 11.3 Get Comprehensive Company Sentiment Pulse
+- **`GET /sentiment/company/{symbol}`**
+- **Path Params:** `symbol: str`
+- **Query Params:** `limit: int = 100`
 - **Response:**
+```json
+{
+  "symbol": "RELIANCE",
+  "overall_sentiment": "Bullish",
+  "sentiment_score": 0.42,
+  "positive_pct": 62.0,
+  "neutral_pct": 24.0,
+  "negative_pct": 14.0,
+  "sample_size": 85
+}
+```
+
+---
+
+## 12. Home Page & Market Overview
+
+*(Also available under prefix `/api/market`)*
+
+### 12.1 Consolidated Master Home Page Dashboard
+- **`GET /home`**
+- **Description:** Complete master dashboard payload in 1 roundtrip (overview, breadth, movers, sectors, earnings, watchlists, 52w extremes, volume shockers, sentiment).
+- **Query Params:** `force_refresh: bool = false`
+- **Response:** `HomeDashboardResponse`
+
+### 12.2 Market Overview & Major Indices
+- **`GET /home/overview`**
+- **Description:** Live values for Nifty 50, Sensex, Bank Nifty, Nifty IT, S&P 500, exchange hours status, and market regime.
+- **Query Params:** `force_refresh: bool = false`
+- **Response:** `MarketOverviewResponse`
+
+### 12.3 Advance / Decline Ratio (Market Breadth)
+- **`GET /home/advance-decline`**
+- **Description:** Advances, declines, unchanged counts, Advance/Decline Ratio (ADR), and breadth sentiment.
+- **Query Params:** `force_refresh: bool = false`
+- **Response:** `AdvanceDeclineResponse`
+
+### 12.4 Top Gainers, Losers & Most Active
+- **`GET /home/movers`**
+- **Query Params:**
+  - `cap: str = "all"` (`large`, `mid`, `small`, `all`)
+  - `limit: int = 10`
+  - `force_refresh: bool = false`
+- **Response:** `MarketMoversResponse`
+
+### 12.5 Sector Performance Heatmap
+- **`GET /home/sectors`**
+- **Description:** Sector returns, advances vs declines, top gainer/loser, and momentum (`Leading`, `Improving`, `Lagging`, `Weakening`).
+- **Query Params:** `force_refresh: bool = false`
+- **Response:** `List[SectorPerformanceItem]`
+
+### 12.6 Specific Sector Movers
+- **`GET /home/sectors/{sector_name}/movers`**
+- **Path Params:** `sector_name: str` (e.g., `Technology`, `Automobile`)
+- **Query Params:** `force_refresh: bool = false`
+- **Response:** `SectorMoversResponse`
+
+### 12.7 Quarterly Results & Earnings Announcements
+- **`GET /home/quarterly-results`**
+- **Query Params:**
+  - `status: str = "all"` (`upcoming`, `recent`, `all`)
+  - `limit: int = 20`
+  - `force_refresh: bool = false`
+- **Response:** `QuarterlyResultsListResponse`
+
+### 12.8 Get Watchlist with Live Quotes
+- **`GET /home/watchlist`**
+- **Query Params:** `user_id: str = "default"`, `force_refresh: bool = false`
+- **Response:** `WatchlistResponse`
+
+### 12.9 Add Stock to Watchlist
+- **`POST /home/watchlist`**
+- **Request Body:**
+```json
+{
+  "symbol": "INFY",
+  "user_id": "default",
+  "category": "bluechip",
+  "notes": "Top Indian IT leader"
+}
+```
+- **Response:** `201 Created` with added item details.
+
+### 12.10 Remove Stock from Watchlist
+- **`DELETE /home/watchlist/{symbol}`**
+- **Path Params:** `symbol: str`
+- **Query Params:** `user_id: str = "default"`
+- **Response:** `{"symbol": "INFY", "removed": true}`
+
+### 12.11 52-Week High & Low Breakouts
+- **`GET /home/52-week-high-low`**
+- **Query Params:** `threshold_percent: float = 3.5`, `limit: int = 10`
+- **Response:** `HighLow52WeekResponse`
+
+### 12.12 Volume Shockers
+- **`GET /home/volume-shockers`**
+- **Description:** Stocks trading with volume surging >= `min_ratio` compared to 10-day average.
+- **Query Params:** `min_ratio: float = 1.5`, `limit: int = 10`
+- **Response:** `List[StockQuoteResponse]`
+
+### 12.13 Market Sentiment Pulse
+- **`GET /home/sentiment`**
+- **Description:** Market-wide aggregated sentiment breakdown (Bullish/Neutral/Bearish) and composite score.
+- **Response:** `MarketSentimentPulseResponse`
+
+### 12.14 Trigger On-Demand Market Refresh
+- **`POST /home/refresh`**
+- **Description:** Forces live external market provider re-fetch for all tracked indices and equities.
+- **Response:** `RefreshStatusResponse` (`indices_updated`, `quotes_updated`, `status`)
+
+---
+
+## 13. IPO Intelligence (Official Exchange)
+
+*Strictly sourced from NSE / BSE official exchange APIs with zero third-party scrapers.*
+
+### 13.1 Get Upcoming IPOs
+- **`GET /home/ipo/upcoming`**
+- **Description:** Live active and forthcoming IPO issues sourced from NSE official API.
+- **Query Params:** `force_refresh: bool = false`
+- **Response:** `List[dict]`
 ```json
 [
   {
@@ -244,15 +546,18 @@ Base URL: `http://localhost:8000/api`
 ]
 ```
 
-### 5.2 Get Recent IPOs
-- **Endpoint:** `GET /home/ipo/recent`
-- **Query Params:** `days` (int, default 30), `force_refresh` (bool, default `false`)
-- **Response:** List of IPOs listed within the last `days` period with `listing_price`.
+### 13.2 Get Recent IPOs
+- **`GET /home/ipo/recent`**
+- **Description:** IPOs listed within the last `days` period.
+- **Query Params:** `days: int = 30`, `force_refresh: bool = false`
+- **Response:** `List[dict]`
 
-### 5.3 Get IPO Post-Listing Performance
-- **Endpoint:** `GET /home/ipo/{symbol}/performance`
-- **Query Params:** `limit` (int, default 30), `force_refresh` (bool, default `false`)
-- **Response:**
+### 13.3 Get IPO Post-Listing Performance
+- **`GET /home/ipo/{symbol}/performance`**
+- **Description:** Daily OHLCV trading records and returns for a listed IPO.
+- **Path Params:** `symbol: str` (e.g., `BAJAJHFL`)
+- **Query Params:** `limit: int = 30`, `force_refresh: bool = false`
+- **Response:** `List[dict]`
 ```json
 [
   {
