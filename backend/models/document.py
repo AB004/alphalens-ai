@@ -5,7 +5,7 @@ from sqlalchemy import JSON, Column, DateTime, Integer, String, Text
 from backend.database.session import Base
 
 def utc_now() -> datetime:
-    return datetime.utcnow()
+    return datetime.now(timezone.utc)
 
 
 class Document(Base):

@@ -12,6 +12,18 @@ from .news import News
 from .news_cache import NewsCache
 from backend.models.sentiment import Sentiment
 from backend.models.market_recommendation import MarketRecommendation
+from backend.models.market_data import (
+    MarketIndex,
+    StockQuote,
+    QuarterlyResultRecord,
+    WatchlistItemRecord,
+    MarketBreadthSnapshot,
+    IpoDetail,
+    IpoPerformance,
+    MarketNews,
+    MacroIndicator,
+    CurrencyRate,
+)
 
 __all__ = [
     "Document",
@@ -27,5 +39,10 @@ __all__ = [
     "News",
     "NewsCache",
     "Sentiment",
-    "MarketRecommendation"
+    "MarketRecommendation",
+    "MarketIndex",
+    "StockQuote",
+    "QuarterlyResultRecord",
+    "WatchlistItemRecord",
+    "MarketBreadthSnapshot",
 ]

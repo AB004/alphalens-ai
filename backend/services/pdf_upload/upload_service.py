@@ -50,7 +50,7 @@ def save_upload_file(upload_file: UploadFile) -> tuple[Path, int]:
                 size_bytes += len(chunk)
                 if size_bytes > MAX_FILE_SIZE:
                     raise HTTPException(
-                        status_code=status.HTTP_413_CONTENT_TOO_LARGE,
+                        status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
                         detail=f"PDF exceeds the {MAX_FILE_SIZE // (1024 * 1024)} MB upload limit.",
                     )
                 out_file.write(chunk)

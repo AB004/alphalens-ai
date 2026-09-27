@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class CompanyChatRequest(BaseModel):
@@ -74,14 +74,13 @@ class CompanyConversationListResponse(BaseModel):
     conversations: list[CompanyConversationResponse]
 
 class CompanyConversationMessage(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
     id: int
     role: str
     message: str
     citations: list | None = None
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class CompanyConversationDetailResponse(BaseModel):

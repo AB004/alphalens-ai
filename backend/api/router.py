@@ -77,6 +77,15 @@ from backend.api.sentiment.sentiment_analysis import (
 )
 
 
+# ============================================================
+# HOME & MARKET OVERVIEW APIs (MODULE 11.5)
+# ============================================================
+
+from backend.api.home.home import (
+    router as home_router,
+)
+
+
 api_router = APIRouter()
 
 
@@ -182,3 +191,20 @@ api_router.include_router(
     prefix="/sentiment",
     tags=["Sentiment"],
 )
+
+
+# ============================================================
+# HOME & MARKET OVERVIEW APIs (MODULE 11.5)
+# ============================================================
+
+api_router.include_router(
+    home_router,
+    prefix="/home",
+    tags=["Home & Market Overview"],
+)
+
+api_router.include_router(
+    home_router,
+    prefix="/market",
+    tags=["Home & Market Overview"],
+)
